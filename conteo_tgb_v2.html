@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TGB Stock">
+<title>TGB Stock · Conteo</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000'/%3E%3Ctext x='50' y='62' font-family='monospace' font-size='42' font-weight='900' text-anchor='middle' fill='%23bef264'%3ETGB%3C/text%3E%3C/svg%3E">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overscroll-behavior: none; }
+
+  :root {
+    --bg: #000;
+    --bg-2: #0f0f0f;
+    --bg-3: #1a1a1a;
+    --bg-4: #262626;
+    --border: #2a2a2a;
+    --border-strong: #3f3f3f;
+    --text: #fafafa;
+    --text-dim: #a3a3a3;
+    --text-faint: #525252;
+    --lime: #bef264;          /* Verde lima TGB */
+    --lime-dark: #84cc16;
+    --lime-darker: #65a30d;
+    --ok: #22c55e;
+    --warn: #f59e0b;
+    --err: #ef4444;
+    --counted-bg: rgba(190, 242, 100, 0.06);
+    --counted-border: rgba(190, 242, 100, 0.5);
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.4;
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: block; }
+
+  /* ============================================================
+     PANTALLA 1: SELECCIÓN DE LOCAL
+     ============================================================ */
+  #screenSelect {
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 20px;
+    background: var(--bg);
+  }
+  #screenSelect.active { display: flex; }
+
+  .select-header {
+    text-align: center;
+    padding: 30px 0 40px;
+  }
+  .select-logo {
+    font-family: var(--mono);
+    font-weight: 900;
+    font-size: 32px;
+    letter-spacing: 0.05em;
+    color: var(--lime);
+    margin-bottom: 8px;
+  }
+  .select-tagline {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .select-title {
+    font-family: var(--sans);
+    font-size: 22px;
+    font-weight: 800;
+    text-align: center;
+    margin: 20px 0 30px;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .select-subtitle {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-bottom: 30px;
+  }
+  .venue-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+  }
+  .venue-card {
+    background: var(--bg-2);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 24px;
+    text-align: left;
+    cursor: pointer;
+    color: var(--text);
+    font-family: var(--sans);
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .venue-card:active {
+    transform: scale(0.98);
+    border-color: var(--lime);
+    background: var(--bg-3);
+  }
+  .venue-card-name {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .venue-card-arrow {
+    color: var(--lime);
+    font-size: 24px;
+  }
+  .select-footer {
+    text-align: center;
+    color: var(--text-faint);
+    font-size: 11px;
+    font-family: var(--mono);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 30px 0 20px;
+  }
+
+  /* ============================================================
+     PANTALLA 2: MENÚ PRINCIPAL DEL LOCAL
+     ============================================================ */
+  #screenHome {
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  #screenHome.active { display: flex; }
+
+  .home-banner {
+    background: var(--lime);
+    color: #000;
+    padding: 14px 20px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .home-banner .venue-name {
+    font-size: 16px;
+    font-weight: 900;
+  }
+  .home-content {
+    flex: 1;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .home-week {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+  }
+  .action-btn {
+    background: var(--bg-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    padding: 24px;
+    color: var(--text);
+    font-family: var(--sans);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .action-btn:active {
+    transform: scale(0.98);
+    background: var(--bg-3);
+  }
+  .action-btn.primary {
+    background: var(--lime);
+    border-color: var(--lime);
+    color: #000;
+  }
+  .action-btn.primary:active {
+    background: var(--lime-dark);
+  }
+  .action-icon {
+    font-size: 32px;
+    width: 50px;
+    text-align: center;
+  }
+  .action-text { flex: 1; }
+  .action-title {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .action-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    opacity: 0.7;
+  }
+  .home-footer {
+    padding: 20px;
+    text-align: center;
+  }
+  .link-btn {
+    background: none;
+    border: none;
+    color: var(--text-faint);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 10px;
+  }
+  .last-sync {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 10px;
+  }
+  .last-sync.error { color: var(--err); }
+
+  /* ============================================================
+     PANTALLA 3: CONTEO
+     ============================================================ */
+  #screenCount { display: none; padding-bottom: 110px; }
+  #screenCount.active { display: block; }
+
+  .count-header {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .count-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+  }
+  .back-btn {
+    background: none; border: none; color: var(--text);
+    font-size: 22px; cursor: pointer;
+    padding: 4px 12px 4px 0;
+  }
+  .count-title {
+    font-family: var(--mono);
+    font-size: 12px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--text);
+    font-weight: 700;
+  }
+  .count-venue-tag {
+    background: var(--lime);
+    color: #000;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+  }
+
+  .meta-block {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-2);
+  }
+  .meta-block label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--text-faint);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .meta-block input {
+    width: 100%; background: var(--bg-3); border: 1px solid var(--border);
+    color: var(--text); padding: 10px 12px; font-family: var(--sans);
+    font-size: 15px; border-radius: 6px;
+  }
+  .meta-block input:focus { outline: none; border-color: var(--lime); }
+
+  .progress-bar-wrap {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px; background: var(--bg-2);
+    border-top: 1px solid var(--border);
+    font-family: var(--mono); font-size: 12px;
+  }
+  .progress-text { color: var(--text-dim); }
+  .progress-count { color: var(--text); font-weight: 700; }
+  .progress-bar {
+    flex: 1; height: 4px; background: var(--bg-3);
+    border-radius: 2px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--lime);
+    width: 0%; transition: width 0.3s ease;
+  }
+
+  .category {
+    border-bottom: 1px solid var(--border);
+  }
+  .category-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; cursor: pointer; user-select: none;
+    background: var(--bg);
+  }
+  .category-header:active { background: var(--bg-2); }
+  .category-name {
+    font-family: var(--mono); font-size: 12px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text); font-weight: 700;
+  }
+  .category-meta {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--text-faint); display: flex; align-items: center; gap: 10px;
+  }
+  .chevron {
+    width: 8px; height: 8px;
+    border-right: 1.5px solid var(--text-dim);
+    border-bottom: 1.5px solid var(--text-dim);
+    transform: rotate(45deg);
+    transition: transform 0.2s;
+    margin-bottom: 3px;
+  }
+  .category.collapsed .chevron { transform: rotate(-45deg); margin-bottom: -2px; }
+  .category.collapsed .product-list { display: none; }
+
+  .product-list {
+    background: var(--bg-2);
+  }
+  .product {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .product.counted {
+    background: var(--counted-bg);
+    border-left: 3px solid var(--counted-border);
+    padding-left: 13px;
+  }
+  .product-info { min-width: 0; }
+  .product-name {
+    font-size: 15px; color: var(--text);
+    line-height: 1.3; margin-bottom: 2px;
+  }
+  .product-unit {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text-faint); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .product-input {
+    width: 100px; height: 48px;
+    background: var(--bg-3); border: 1px solid var(--border-strong);
+    color: var(--text); text-align: right;
+    font-family: var(--mono); font-size: 19px; font-weight: 700;
+    padding: 0 12px; border-radius: 6px;
+    -webkit-appearance: none; appearance: none;
+  }
+  .product-input:focus {
+    outline: none; border-color: var(--lime);
+    background: var(--bg);
+  }
+  .product.counted .product-input {
+    border-color: var(--counted-border);
+    color: var(--lime);
+  }
+  .product-input::-webkit-outer-spin-button,
+  .product-input::-webkit-inner-spin-button {
+    -webkit-appearance: none; margin: 0;
+  }
+
+  /* ============================================================
+     PANTALLA 4: ALBARÁN (FOTO)
+     ============================================================ */
+  #screenAlbaran { display: none; }
+  #screenAlbaran.active { display: block; }
+
+  .alb-content {
+    padding: 24px 20px;
+  }
+  .alb-step {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .alb-step h3 {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  .alb-step p {
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+  .photo-input-wrap {
+    position: relative;
+  }
+  .photo-input {
+    position: absolute; inset: 0;
+    opacity: 0; cursor: pointer;
+    width: 100%; height: 100%;
+  }
+  .photo-trigger {
+    width: 100%;
+    background: var(--lime);
+    color: #000;
+    border: none;
+    padding: 24px;
+    border-radius: 8px;
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .photo-trigger:active { background: var(--lime-dark); }
+  .photo-icon { font-size: 28px; }
+  .photo-preview {
+    margin-top: 16px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    display: none;
+  }
+  .photo-preview.show { display: block; }
+  .photo-preview img {
+    width: 100%; display: block;
+  }
+  .photo-status {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: var(--bg-3);
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    display: none;
+    text-align: center;
+  }
+  .photo-status.show { display: block; }
+  .photo-status.success { color: var(--ok); border: 1px solid var(--ok); }
+  .photo-status.error { color: var(--err); border: 1px solid var(--err); }
+
+  /* ============================================================
+     FOOTER FIJO (botón enviar)
+     ============================================================ */
+  .footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--bg);
+    border-top: 1px solid var(--border-strong);
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 8px;
+    z-index: 100;
+  }
+  .btn {
+    border: 1px solid var(--border-strong);
+    background: var(--bg-3);
+    color: var(--text);
+    padding: 16px 12px;
+    font-family: var(--mono); font-size: 12px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    border-radius: 6px; cursor: pointer;
+    font-weight: 700;
+    transition: all 0.15s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: var(--lime); border-color: var(--lime);
+    color: #000;
+  }
+  .btn-primary:disabled {
+    background: var(--bg-3); border-color: var(--border);
+    color: var(--text-faint); cursor: not-allowed;
+  }
+  .btn-ghost {
+    background: transparent; color: var(--text-dim);
+  }
+
+  /* ============================================================
+     TOAST + MODAL
+     ============================================================ */
+  .toast {
+    position: fixed; bottom: 90px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg-3);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    padding: 12px 22px;
+    border-radius: 6px;
+    font-family: var(--mono); font-size: 12px;
+    letter-spacing: 0.05em;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 200;
+    max-width: 90%;
+    text-align: center;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  .toast.success { border-color: var(--ok); color: var(--ok); }
+  .toast.error { border-color: var(--err); color: var(--err); }
+
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none; align-items: flex-end; justify-content: center;
+    z-index: 300;
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal {
+    background: var(--bg-2);
+    border-top: 2px solid var(--lime);
+    width: 100%; max-width: 480px;
+    padding: 28px 24px calc(28px + env(safe-area-inset-bottom));
+    border-radius: 16px 16px 0 0;
+  }
+  .modal h3 {
+    font-family: var(--sans);
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .modal h3 .lime { color: var(--lime); }
+  .modal p {
+    font-size: 14px; color: var(--text-dim);
+    margin-bottom: 24px; line-height: 1.5;
+  }
+  .modal-actions {
+    display: grid; grid-template-columns: 1fr 1.5fr;
+    gap: 10px;
+  }
+  .modal .btn { padding: 18px 12px; font-size: 13px; }
+
+  /* Loading overlay */
+  .loading-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.8);
+    display: none; align-items: center; justify-content: center;
+    z-index: 400;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .loading-overlay.show { display: flex; }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--lime);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text {
+    font-family: var(--mono); font-size: 12px;
+    color: var(--text-dim); letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Pending sync indicator */
+  .pending-banner {
+    background: var(--warn);
+    color: #000;
+    padding: 10px 16px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: none;
+  }
+  .pending-banner.show { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ================================================================
+     PANTALLA 1: SELECCIÓN DE LOCAL
+     ================================================================ -->
+<section id="screenSelect" class="screen">
+  <div class="select-header">
+    <div class="select-logo">TGB</div>
+    <div class="select-tagline">CONTROL STOCK</div>
+  </div>
+  <h1 class="select-title">¿Cuál es tu local?</h1>
+  <p class="select-subtitle">Selecciónalo solo la primera vez</p>
+  <div class="venue-cards">
+    <button class="venue-card" data-venue="TOLOSA">
+      <span class="venue-card-name">TOLOSA</span>
+      <span class="venue-card-arrow">→</span>
+    </button>
+    <button class="venue-card" data-venue="ZURRIOLA">
+      <span class="venue-card-name">ZURRIOLA</span>
+      <span class="venue-card-arrow">→</span>
+    </button>
+    <button class="venue-card" data-venue="BALLONTI">
+      <span class="venue-card-name">BALLONTI</span>
+      <span class="venue-card-arrow">→</span>
+    </button>
+  </div>
+  <div class="select-footer">GRUPO RECOBE · v2.0</div>
+</section>
+
+<!-- ================================================================
+     PANTALLA 2: MENÚ PRINCIPAL DEL LOCAL
+     ================================================================ -->
+<section id="screenHome" class="screen">
+  <div class="home-banner">
+    Estás en <span class="venue-name" id="homeVenueName">—</span>
+  </div>
+  <div class="pending-banner" id="pendingBanner">
+    ⏱ Hay datos pendientes de enviar
+  </div>
+  <div class="home-content">
+    <div class="home-week" id="homeWeekLabel">SEMANA —</div>
+
+    <button class="action-btn primary" id="goCount">
+      <div class="action-icon">📋</div>
+      <div class="action-text">
+        <div class="action-title">CONTEO LUNES</div>
+        <div class="action-meta">Inventario semanal · 44 productos</div>
+      </div>
+    </button>
+
+    <button class="action-btn" id="goAlbaran">
+      <div class="action-icon">📷</div>
+      <div class="action-text">
+        <div class="action-title">ALBARÁN ENTRADA</div>
+        <div class="action-meta">Foto del albarán del camión</div>
+      </div>
+    </button>
+
+    <div class="last-sync" id="lastSync">Última sincronización: nunca</div>
+  </div>
+  <div class="home-footer">
+    <button class="link-btn" id="changeVenueBtn">⚙ Cambiar local</button>
+  </div>
+</section>
+
+<!-- ================================================================
+     PANTALLA 3: CONTEO
+     ================================================================ -->
+<section id="screenCount" class="screen">
+  <div class="count-header">
+    <div class="count-bar">
+      <button class="back-btn" id="backFromCount">←</button>
+      <div class="count-title">CONTEO INVENTARIO</div>
+      <div class="count-venue-tag" id="countVenueTag">—</div>
+    </div>
+    <div class="progress-bar-wrap">
+      <span class="progress-text">PROGRESO</span>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="progress-count" id="progressCount">0/44</span>
+    </div>
+  </div>
+
+  <div class="meta-block">
+    <label for="responsable">Responsable del conteo</label>
+    <input type="text" id="responsable" placeholder="Tu nombre" autocomplete="name">
+  </div>
+
+  <main id="categories"></main>
+
+  <footer class="footer">
+    <button class="btn btn-ghost" id="btnReset">Limpiar</button>
+    <button class="btn btn-primary" id="btnSend">Enviar conteo</button>
+  </footer>
+</section>
+
+<!-- ================================================================
+     PANTALLA 4: ALBARÁN
+     ================================================================ -->
+<section id="screenAlbaran" class="screen">
+  <div class="count-header">
+    <div class="count-bar">
+      <button class="back-btn" id="backFromAlbaran">←</button>
+      <div class="count-title">ALBARÁN ENTRADA</div>
+      <div class="count-venue-tag" id="albaranVenueTag">—</div>
+    </div>
+  </div>
+
+  <div class="alb-content">
+    <div class="alb-step">
+      <h3>1 · Hacer foto</h3>
+      <p>Apunta al albarán completo. Asegúrate de que se ve bien la lista de productos y cantidades. Si hay varias páginas, hazlas una a una.</p>
+      <div class="photo-input-wrap">
+        <button class="photo-trigger">
+          <span class="photo-icon">📷</span>
+          <span>HACER FOTO</span>
+        </button>
+        <input type="file" class="photo-input" id="photoInput" accept="image/*" capture="environment">
+      </div>
+      <div class="photo-preview" id="photoPreview">
+        <img id="photoImg" alt="Albarán">
+      </div>
+      <div class="photo-status" id="photoStatus"></div>
+    </div>
+
+    <div class="alb-step" id="albaranMeta" style="display:none;">
+      <h3>2 · Confirmar envío</h3>
+      <p id="albaranSummary">Foto lista para enviar.</p>
+      <button class="btn btn-primary" style="width:100%;padding:18px;" id="btnSendAlbaran">ENVIAR ALBARÁN</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     OVERLAYS COMUNES
+     ================================================================ -->
+<div class="toast" id="toast"></div>
+
+<div class="modal-backdrop" id="confirmModal">
+  <div class="modal">
+    <h3 id="modalTitle">Confirmar</h3>
+    <p id="modalText">—</p>
+    <div class="modal-actions">
+      <button class="btn" id="modalCancel">Cancelar</button>
+      <button class="btn btn-primary" id="modalConfirm">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">Enviando...</div>
+</div>
+
+<script>
+/* =====================================================================
+   ⚙️ CONFIGURACIÓN — EDITAR ESTAS LÍNEAS DESPUÉS DE PUBLICAR APPS SCRIPT
+   ===================================================================== */
+const CONFIG = {
+  // Pega aquí la URL del Apps Script publicado como Web App.
+  // La obtendrás siguiendo la guía de instalación.
+  // Ejemplo: "https://script.google.com/macros/s/AKfycbx.../exec"
+  API_URL: "PEGA_AQUI_LA_URL_DEL_APPS_SCRIPT",
+  APP_VERSION: "2.0"
+};
+
+/* =====================================================================
+   MAESTRO DE PRODUCTOS — idéntico al Excel maestro
+   ===================================================================== */
+const PRODUCTOS = [
+  { cat: "Proteína",  nombre: "Hamburguesa Vacuno 135g",   und: "uds" },
+  { cat: "Proteína",  nombre: "Lagrimas de Pollo",         und: "kg"  },
+  { cat: "Proteína",  nombre: "Crispy Chicken",            und: "uds" },
+  { cat: "Proteína",  nombre: "Alitas Barbacoa 2kg",       und: "kg"  },
+  { cat: "Proteína",  nombre: "Pulled Pork TGB",           und: "kg"  },
+  { cat: "Proteína",  nombre: "Bacon Loncheado",           und: "kg"  },
+  { cat: "Proteína",  nombre: "Bacon Sello",               und: "kg"  },
+  { cat: "Proteína",  nombre: "Salchicha Vacuno",          und: "uds" },
+  { cat: "Proteína",  nombre: "Burger Vegana Pollo",       und: "uds" },
+  { cat: "Panadería", nombre: "Pan Burger XL 64g",         und: "uds" },
+  { cat: "Panadería", nombre: "Pan Burger Doble Disco",    und: "uds" },
+  { cat: "Panadería", nombre: "Pan Lobster 75g",           und: "uds" },
+  { cat: "Lácteos",   nombre: "Lonchas Hochland",          und: "kg"  },
+  { cat: "Lácteos",   nombre: "Queso Cabra Empanado",      und: "uds" },
+  { cat: "Lácteos",   nombre: "Bites Cheddar Jalapeño",    und: "kg"  },
+  { cat: "Lácteos",   nombre: "Camembert Empanado",        und: "kg"  },
+  { cat: "Fritos",    nombre: "Patata Really Crunchy",     und: "kg"  },
+  { cat: "Fritos",    nombre: "Sweet Potato Fries",        und: "kg"  },
+  { cat: "Fritos",    nombre: "Aceite Fritura 5L",         und: "lt"  },
+  { cat: "Fritos",    nombre: "Harina Rebozar",            und: "kg"  },
+  { cat: "Frescos",   nombre: "Lechuga Batavia",           und: "kg"  },
+  { cat: "Frescos",   nombre: "Tomate Maduro",             und: "kg"  },
+  { cat: "Frescos",   nombre: "Cebolla Pelada",            und: "kg"  },
+  { cat: "Salsas",    nombre: "Salsa Cheddar 1kg",         und: "kg"  },
+  { cat: "Salsas",    nombre: "Salsa Barbacoa Heinz",      und: "kg"  },
+  { cat: "Salsas",    nombre: "Salsa Mayonesa Chovi",      und: "kg"  },
+  { cat: "Salsas",    nombre: "Salsa TGB",                 und: "kg"  },
+  { cat: "Salsas",    nombre: "Salsa Mostaza Miel",        und: "kg"  },
+  { cat: "Postres",   nombre: "Helado Vainilla C-10",      und: "kg"  },
+  { cat: "Postres",   nombre: "B&J Cookie 100ml",          und: "uds" },
+  { cat: "Postres",   nombre: "B&J Chocolate 100ml",       und: "uds" },
+  { cat: "Refrescos", nombre: "Coca-Cola BIB 10L",         und: "lt"  },
+  { cat: "Refrescos", nombre: "Coca-Cola Zero BIB 10L",    und: "lt"  },
+  { cat: "Refrescos", nombre: "Fanta Naranja BIB 10L",     und: "lt"  },
+  { cat: "Refrescos", nombre: "Fanta Limón Zero BIB 5L",   und: "lt"  },
+  { cat: "Refrescos", nombre: "Sprite BIB 5L",             und: "lt"  },
+  { cat: "Refrescos", nombre: "Aquarius Zero BIB 5L",      und: "lt"  },
+  { cat: "Refrescos", nombre: "Fuze Tea Limón BIB 5L",     und: "lt"  },
+  { cat: "Cervezas",  nombre: "Heineken Barril",           und: "lt"  },
+  { cat: "Cervezas",  nombre: "Águila Dorada Barril",      und: "lt"  },
+  { cat: "Cervezas",  nombre: "Águila Sin Filtrar Barril", und: "lt"  },
+  { cat: "Cervezas",  nombre: "Radler Limón Barril",       und: "lt"  },
+  { cat: "Cervezas",  nombre: "Paulaner Barril",           und: "lt"  }
+];
+PRODUCTOS.forEach((p, i) => { p.id = "p" + i; });
+
+const STORAGE_KEY = "tgb_stock_v2";
+const VENUES = ["TOLOSA", "ZURRIOLA", "BALLONTI"];
+
+/* =====================================================================
+   ESTADO + PERSISTENCIA
+   ===================================================================== */
+let state = loadState();
+let collapsedCats = new Set();
+let pendingPhoto = null; // { dataUrl, fileName, sizeKB }
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    if (!parsed.venue) parsed.venue = null;
+    if (!parsed.counts) parsed.counts = {};
+    if (!parsed.responsable) parsed.responsable = "";
+    if (!parsed.lastSync) parsed.lastSync = null;
+    if (!parsed.pendingQueue) parsed.pendingQueue = [];
+    return parsed;
+  } catch (e) {
+    return defaultState();
+  }
+}
+
+function defaultState() {
+  return {
+    venue: null,
+    counts: {},
+    responsable: "",
+    lastSync: null,
+    pendingQueue: []
+  };
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+/* =====================================================================
+   ROUTING DE PANTALLAS
+   ===================================================================== */
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0, 0);
+}
+
+function bootstrap() {
+  if (!state.venue) {
+    showScreen("screenSelect");
+  } else {
+    renderHome();
+    showScreen("screenHome");
+    // Reintentar enviar lo que esté pendiente
+    if (state.pendingQueue.length > 0) {
+      processPendingQueue();
+    }
+  }
+}
+
+/* =====================================================================
+   PANTALLA 1: SELECCIÓN DE LOCAL
+   ===================================================================== */
+document.querySelectorAll(".venue-card").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const venue = btn.dataset.venue;
+    confirmAction(
+      `¿Tu local es <span class="lime">${venue}</span>?`,
+      "Esta selección se guardará en tu móvil. Solo cámbiala si te has equivocado o trabajas en otro local.",
+      () => {
+        state.venue = venue;
+        saveState();
+        renderHome();
+        showScreen("screenHome");
+      }
+    );
+  });
+});
+
+/* =====================================================================
+   PANTALLA 2: HOME
+   ===================================================================== */
+function renderHome() {
+  document.getElementById("homeVenueName").textContent = state.venue;
+  document.getElementById("homeWeekLabel").textContent = getWeekLabel();
+  const sync = document.getElementById("lastSync");
+  if (state.lastSync) {
+    const d = new Date(state.lastSync);
+    sync.textContent = `Última sincronización: ${d.toLocaleString("es-ES", {dateStyle:"short", timeStyle:"short"})}`;
+    sync.classList.remove("error");
+  } else {
+    sync.textContent = "Última sincronización: nunca";
+  }
+  // Banner pendiente
+  const pending = document.getElementById("pendingBanner");
+  if (state.pendingQueue.length > 0) {
+    pending.classList.add("show");
+    pending.textContent = `⏱ ${state.pendingQueue.length} envío(s) pendiente(s) — reintentando...`;
+  } else {
+    pending.classList.remove("show");
+  }
+}
+
+document.getElementById("goCount").addEventListener("click", () => {
+  document.getElementById("countVenueTag").textContent = state.venue;
+  document.getElementById("responsable").value = state.responsable || "";
+  renderCategories();
+  updateProgress();
+  showScreen("screenCount");
+});
+
+document.getElementById("goAlbaran").addEventListener("click", () => {
+  document.getElementById("albaranVenueTag").textContent = state.venue;
+  pendingPhoto = null;
+  document.getElementById("photoPreview").classList.remove("show");
+  document.getElementById("photoStatus").classList.remove("show");
+  document.getElementById("albaranMeta").style.display = "none";
+  showScreen("screenAlbaran");
+});
+
+document.getElementById("changeVenueBtn").addEventListener("click", () => {
+  confirmAction(
+    "¿Cambiar de local?",
+    "Vas a poder elegir otro local. Los datos no enviados se mantendrán en cola.",
+    () => {
+      state.venue = null;
+      saveState();
+      showScreen("screenSelect");
+    }
+  );
+});
+
+/* =====================================================================
+   PANTALLA 3: CONTEO
+   ===================================================================== */
+document.getElementById("backFromCount").addEventListener("click", () => {
+  renderHome();
+  showScreen("screenHome");
+});
+
+document.getElementById("responsable").addEventListener("input", e => {
+  state.responsable = e.target.value;
+  saveState();
+});
+
+function renderCategories() {
+  const container = document.getElementById("categories");
+  const groups = [];
+  const seen = new Map();
+  PRODUCTOS.forEach(p => {
+    if (!seen.has(p.cat)) {
+      const arr = [];
+      seen.set(p.cat, arr);
+      groups.push({ cat: p.cat, items: arr });
+    }
+    seen.get(p.cat).push(p);
+  });
+
+  const counts = state.counts || {};
+  container.innerHTML = groups.map(g => {
+    const counted = g.items.filter(it => counts[it.id] !== undefined && counts[it.id] !== "").length;
+    const isCollapsed = collapsedCats.has(g.cat);
+    return `
+      <section class="category ${isCollapsed ? "collapsed" : ""}" data-cat="${g.cat}">
+        <div class="category-header">
+          <span class="category-name">▸ ${g.cat}</span>
+          <div class="category-meta">
+            <span data-cat-progress="${g.cat}">${counted}/${g.items.length}</span>
+            <div class="chevron"></div>
+          </div>
+        </div>
+        <div class="product-list">
+          ${g.items.map(it => {
+            const v = counts[it.id];
+            const has = v !== undefined && v !== "";
+            return `
+              <div class="product ${has ? "counted" : ""}" data-pid="${it.id}">
+                <div class="product-info">
+                  <div class="product-name">${it.nombre}</div>
+                  <div class="product-unit">${it.und}</div>
+                </div>
+                <input class="product-input" type="number" inputmode="decimal" step="0.01" min="0" placeholder="—" value="${has ? v : ""}" data-pid="${it.id}">
+              </div>`;
+          }).join("")}
+        </div>
+      </section>`;
+  }).join("");
+
+  container.querySelectorAll(".category-header").forEach(h => {
+    h.addEventListener("click", () => {
+      const cat = h.parentElement.dataset.cat;
+      if (collapsedCats.has(cat)) collapsedCats.delete(cat);
+      else collapsedCats.add(cat);
+      h.parentElement.classList.toggle("collapsed");
+    });
+  });
+
+  container.querySelectorAll(".product-input").forEach(inp => {
+    inp.addEventListener("input", e => {
+      const pid = e.target.dataset.pid;
+      const val = e.target.value;
+      if (val === "" || val === null) delete state.counts[pid];
+      else state.counts[pid] = val;
+      saveState();
+      const productEl = e.target.closest(".product");
+      productEl.classList.toggle("counted", val !== "" && val !== null);
+      updateCategoryProgress(productEl.closest(".category").dataset.cat);
+      updateProgress();
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") e.target.blur(); });
+  });
+}
+
+function updateCategoryProgress(cat) {
+  const counts = state.counts || {};
+  const items = PRODUCTOS.filter(p => p.cat === cat);
+  const counted = items.filter(it => counts[it.id] !== undefined && counts[it.id] !== "").length;
+  const el = document.querySelector(`[data-cat-progress="${cat}"]`);
+  if (el) el.textContent = `${counted}/${items.length}`;
+}
+
+function updateProgress() {
+  const counts = state.counts || {};
+  const counted = PRODUCTOS.filter(p => counts[p.id] !== undefined && counts[p.id] !== "").length;
+  document.getElementById("progressCount").textContent = `${counted}/${PRODUCTOS.length}`;
+  document.getElementById("progressFill").style.width = `${(counted/PRODUCTOS.length)*100}%`;
+  document.getElementById("btnSend").disabled = counted === 0;
+}
+
+document.getElementById("btnReset").addEventListener("click", () => {
+  confirmAction(
+    "¿Limpiar conteo?",
+    `Se borrarán los valores del conteo actual de ${state.venue}. Esta acción no se puede deshacer.`,
+    () => {
+      state.counts = {};
+      saveState();
+      renderCategories();
+      updateProgress();
+      showToast("Conteo limpiado");
+    }
+  );
+});
+
+document.getElementById("btnSend").addEventListener("click", () => {
+  const counts = state.counts || {};
+  const counted = PRODUCTOS.filter(p => counts[p.id] !== undefined && counts[p.id] !== "").length;
+  if (counted === 0) return;
+  if (!state.responsable || state.responsable.trim() === "") {
+    showToast("Pon tu nombre en Responsable", "error");
+    document.getElementById("responsable").focus();
+    return;
+  }
+
+  const incomplete = counted < PRODUCTOS.length;
+  const title = `¿Enviar conteo de <span class="lime">${state.venue}</span>?`;
+  const text = incomplete
+    ? `Faltan ${PRODUCTOS.length - counted} productos por contar. Una vez enviado, no se puede modificar.`
+    : `Conteo completo (${PRODUCTOS.length} productos). Una vez enviado, no se puede modificar.`;
+
+  confirmAction(title, text, sendCount);
+});
+
+async function sendCount() {
+  const week = getWeekRange();
+  const items = PRODUCTOS.map(p => ({
+    id: p.id,
+    nombre: p.nombre,
+    und: p.und,
+    categoria: p.cat,
+    cantidad: state.counts[p.id] !== undefined && state.counts[p.id] !== "" ? Number(state.counts[p.id]) : null
+  }));
+
+  const payload = {
+    type: "conteo",
+    venue: state.venue,
+    weekStart: week.start,
+    weekEnd: week.end,
+    responsable: state.responsable,
+    timestamp: new Date().toISOString(),
+    items: items,
+    appVersion: CONFIG.APP_VERSION
+  };
+
+  showLoading("Enviando conteo...");
+  const ok = await sendPayload(payload);
+  hideLoading();
+
+  if (ok) {
+    state.counts = {};  // limpiar para la siguiente semana
+    state.lastSync = new Date().toISOString();
+    saveState();
+    showToast("✓ Conteo enviado correctamente", "success");
+    setTimeout(() => {
+      renderHome();
+      showScreen("screenHome");
+    }, 1200);
+  } else {
+    // Encolar para reintento
+    enqueuePayload(payload);
+    showToast("Sin red. Guardado para reenvío automático", "error");
+    setTimeout(() => { renderHome(); showScreen("screenHome"); }, 1500);
+  }
+}
+
+/* =====================================================================
+   PANTALLA 4: ALBARÁN
+   ===================================================================== */
+document.getElementById("backFromAlbaran").addEventListener("click", () => {
+  renderHome();
+  showScreen("screenHome");
+});
+
+document.getElementById("photoInput").addEventListener("change", async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const status = document.getElementById("photoStatus");
+  const preview = document.getElementById("photoPreview");
+  const img = document.getElementById("photoImg");
+
+  status.classList.remove("show", "success", "error");
+  status.textContent = "Procesando imagen...";
+  status.classList.add("show");
+
+  try {
+    const dataUrl = await compressImage(file, 1600, 0.75);
+    const sizeKB = Math.round((dataUrl.length * 3) / 4 / 1024);
+    img.src = dataUrl;
+    preview.classList.add("show");
+    pendingPhoto = { dataUrl, fileName: file.name, sizeKB };
+    status.textContent = `✓ Imagen lista (${sizeKB} KB)`;
+    status.classList.add("success");
+
+    document.getElementById("albaranMeta").style.display = "block";
+    document.getElementById("albaranSummary").textContent =
+      `La foto se enviará a ${state.venue}. Tras enviarla, el sistema leerá los productos y los añadirá como entrada de stock.`;
+  } catch (err) {
+    status.textContent = "Error al procesar la foto: " + err.message;
+    status.classList.add("error");
+  }
+});
+
+document.getElementById("btnSendAlbaran").addEventListener("click", () => {
+  if (!pendingPhoto) return;
+  confirmAction(
+    `¿Enviar albarán de <span class="lime">${state.venue}</span>?`,
+    `Se enviará la foto al sistema. Una vez procesado el albarán, las cantidades entrarán como compras de la semana.`,
+    sendAlbaran
+  );
+});
+
+async function sendAlbaran() {
+  const week = getWeekRange();
+  const payload = {
+    type: "albaran",
+    venue: state.venue,
+    weekStart: week.start,
+    weekEnd: week.end,
+    timestamp: new Date().toISOString(),
+    photoBase64: pendingPhoto.dataUrl,
+    fileName: pendingPhoto.fileName,
+    sizeKB: pendingPhoto.sizeKB,
+    appVersion: CONFIG.APP_VERSION
+  };
+
+  showLoading("Enviando albarán...");
+  const ok = await sendPayload(payload);
+  hideLoading();
+
+  if (ok) {
+    state.lastSync = new Date().toISOString();
+    saveState();
+    pendingPhoto = null;
+    showToast("✓ Albarán enviado", "success");
+    setTimeout(() => { renderHome(); showScreen("screenHome"); }, 1200);
+  } else {
+    enqueuePayload(payload);
+    showToast("Sin red. Guardado para reenvío", "error");
+    setTimeout(() => { renderHome(); showScreen("screenHome"); }, 1500);
+  }
+}
+
+/* Comprime imagen a JPEG redimensionada */
+function compressImage(file, maxDim, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          const r = Math.min(maxDim / width, maxDim / height);
+          width = Math.round(width * r);
+          height = Math.round(height * r);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.onerror = () => reject(new Error("imagen inválida"));
+      img.src = reader.result;
+    };
+    reader.onerror = () => reject(new Error("lectura"));
+    reader.readAsDataURL(file);
+  });
+}
+
+/* =====================================================================
+   ENVÍO + COLA OFFLINE
+   ===================================================================== */
+async function sendPayload(payload) {
+  if (!CONFIG.API_URL || CONFIG.API_URL.startsWith("PEGA_")) {
+    console.warn("API_URL no configurada. Payload:", payload);
+    showToast("⚠ API no configurada", "error");
+    return false;
+  }
+  try {
+    // Apps Script web app: usar text/plain para evitar preflight CORS
+    const res = await fetch(CONFIG.API_URL, {
+      method: "POST",
+      mode: "cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json().catch(() => ({}));
+    if (data.ok === false) throw new Error(data.error || "respuesta no OK");
+    return true;
+  } catch (e) {
+    console.error("Error envío:", e);
+    return false;
+  }
+}
+
+function enqueuePayload(payload) {
+  state.pendingQueue.push(payload);
+  saveState();
+}
+
+async function processPendingQueue() {
+  if (!state.pendingQueue || state.pendingQueue.length === 0) return;
+  const queue = [...state.pendingQueue];
+  for (const p of queue) {
+    const ok = await sendPayload(p);
+    if (ok) {
+      state.pendingQueue = state.pendingQueue.filter(x => x !== p);
+      state.lastSync = new Date().toISOString();
+      saveState();
+      renderHome();
+    } else {
+      break; // si falla uno, parar y reintentar luego
+    }
+  }
+}
+
+// Reintento al volver a tener red
+window.addEventListener("online", processPendingQueue);
+
+/* =====================================================================
+   UTILIDADES (semana, modal, toast, loading)
+   ===================================================================== */
+function getWeekLabel() {
+  const r = getWeekRange();
+  const fmt = s => {
+    const [y, m, d] = s.split("-");
+    return `${d}/${m}`;
+  };
+  return `SEM ${fmt(r.start)} – ${fmt(r.end)}`;
+}
+function getWeekRange() {
+  const today = new Date();
+  const day = today.getDay();
+  const diffToMonday = (day === 0 ? -6 : 1 - day);
+  const monday = new Date(today);
+  monday.setDate(today.getDate() + diffToMonday);
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  const fmt = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  return { start: fmt(monday), end: fmt(sunday) };
+}
+
+let toastTimer = null;
+function showToast(msg, type) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.remove("success", "error");
+  if (type) t.classList.add(type);
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+function confirmAction(title, text, onConfirm) {
+  const modal = document.getElementById("confirmModal");
+  document.getElementById("modalTitle").innerHTML = title;
+  document.getElementById("modalText").textContent = text;
+  modal.classList.add("show");
+  const cleanup = () => {
+    modal.classList.remove("show");
+    document.getElementById("modalConfirm").onclick = null;
+    document.getElementById("modalCancel").onclick = null;
+    modal.onclick = null;
+  };
+  document.getElementById("modalConfirm").onclick = () => { cleanup(); onConfirm(); };
+  document.getElementById("modalCancel").onclick = cleanup;
+  modal.onclick = (e) => { if (e.target === modal) cleanup(); };
+}
+
+function showLoading(text) {
+  document.getElementById("loadingText").textContent = text || "Procesando...";
+  document.getElementById("loadingOverlay").classList.add("show");
+}
+function hideLoading() {
+  document.getElementById("loadingOverlay").classList.remove("show");
+}
+
+/* =====================================================================
+   INIT
+   ===================================================================== */
+bootstrap();
+</script>
+</body>
+</html>
