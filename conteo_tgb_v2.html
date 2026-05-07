@@ -146,6 +146,18 @@ body { background:var(--bg); color:var(--text); font-family:var(--sans); font-si
 .spinner { width:40px; height:40px; border:3px solid var(--border); border-top-color:var(--lime); border-radius:50%; animation:spin 0.8s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }
 .loading-text { font-family:var(--mono); font-size:12px; color:var(--text-dim); letter-spacing:0.1em; text-transform:uppercase; }
+
+/* OCR albarán */
+.ocr-table{width:100%;border-collapse:collapse;margin-top:8px;}
+.ocr-table th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);padding:6px 8px;text-align:left;border-bottom:1px solid var(--border);}
+.ocr-table td{padding:10px 8px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.ocr-row.unknown .ocr-nombre{color:var(--warn);}
+.ocr-nombre{font-size:14px;color:var(--text);line-height:1.3;}
+.ocr-codigo{font-family:var(--mono);font-size:10px;color:var(--text-faint);margin-top:2px;}
+.ocr-mapped{font-size:11px;color:var(--lime);margin-top:2px;font-family:var(--mono);}
+.ocr-qty{width:88px;height:44px;background:var(--bg-3);border:1px solid var(--border-strong);color:var(--text);text-align:right;font-family:var(--mono);font-size:18px;font-weight:700;padding:0 10px;border-radius:6px;}
+.ocr-qty:focus{outline:none;border-color:var(--lime);}
+.ocr-qty::-webkit-outer-spin-button,.ocr-qty::-webkit-inner-spin-button{-webkit-appearance:none;}
 </style>
 </head>
 <body>
@@ -163,7 +175,7 @@ body { background:var(--bg); color:var(--text); font-family:var(--sans); font-si
   <button class="venue-card" data-venue="ZURRIOLA"><span class="venue-card-name">ZURRIOLA</span><span class="venue-card-arrow">→</span></button>
   <button class="venue-card" data-venue="BALLONTI"><span class="venue-card-name">BALLONTI</span><span class="venue-card-arrow">→</span></button>
 </div>
-<div class="select-footer">GRUPO RECOBE · v2.1</div>
+<div class="select-footer">GRUPO RECOBE · v2.2</div>
 </section>
 
 <!-- PANTALLA 2: HOME -->
@@ -233,31 +245,40 @@ body { background:var(--bg); color:var(--text); font-family:var(--sans); font-si
 
 <!-- PANTALLA 4: ALBARÁN -->
 <section id="screenAlbaran" class="screen">
-<div class="count-header">
-  <div class="count-bar">
-    <button class="back-btn" id="backFromAlbaran">←</button>
-    <div class="count-title">ALBARÁN ENTRADA</div>
-    <div class="count-venue-tag" id="albaranVenueTag">—</div>
-  </div>
-</div>
+<div class="count-header"><div class="count-bar">
+<button class="back-btn" id="backFromAlbaran">←</button>
+<div class="count-title">ALBARÁN ENTRADA</div>
+<div class="count-venue-tag" id="albaranVenueTag">—</div>
+</div></div>
 <div class="alb-content">
-  <div class="alb-step">
-    <h3>1 · Hacer foto</h3>
-    <p>Apunta al albarán completo. Asegúrate de que se ven bien los productos y cantidades. Si hay varias páginas, hazlas una a una.</p>
-    <div class="photo-input-wrap">
-      <button class="photo-trigger"><span class="photo-icon">📷</span><span>HACER FOTO</span></button>
-      <input type="file" class="photo-input" id="photoInput" accept="image/*" capture="environment">
-    </div>
-    <div class="photo-preview" id="photoPreview"><img id="photoImg" alt="Albarán"></div>
-    <div class="photo-status" id="photoStatus"></div>
-  </div>
-  <div class="alb-step" id="albaranMeta" style="display:none;">
-    <h3>2 · Confirmar envío</h3>
-    <p id="albaranSummary">Foto lista para enviar.</p>
-    <button class="btn btn-primary" style="width:100%;padding:18px;" id="btnSendAlbaran">ENVIAR ALBARÁN</button>
-  </div>
+<div id="albFase1">
+<div class="alb-step"><h3>1 · Foto o PDF del albarán</h3>
+<p>El sistema leerá automáticamente los productos y cantidades. Solo tienes que corregir lo que no coincida.</p>
+<div class="photo-input-wrap">
+<button class="photo-trigger"><span class="photo-icon">📷</span><span>HACER FOTO / SUBIR PDF</span></button>
+<input type="file" class="photo-input" id="photoInput" accept="image/*,application/pdf" capture="environment">
 </div>
-</section>
+<div class="photo-preview" id="photoPreview"><img id="photoImg" alt="Albarán"></div>
+<div class="photo-status" id="photoStatus"></div></div>
+<div class="alb-step" id="albFase1Send" style="display:none;">
+<button class="btn btn-primary" style="width:100%;padding:18px;" id="btnOcr">🔍 LEER ALBARÁN</button>
+</div></div>
+<div id="albFase2" style="display:none;">
+<div class="alb-step"><h3>2 · Revisar cantidades recibidas</h3>
+<p id="ocrSummary">Comprueba que las cantidades son las que llegaron realmente.</p>
+<div id="ocrTable"></div>
+<p style="font-size:11px;color:var(--text-faint);margin-top:10px;font-family:var(--mono);">En naranja: productos no identificados en el catálogo.</p></div>
+<div class="alb-step" style="padding-bottom:80px;">
+<button class="btn btn-primary" style="width:100%;padding:18px;" id="btnConfirmarAlbaran">✓ CONFIRMAR ENTRADAS</button>
+</div></div>
+<div id="albFase3" style="display:none;padding-bottom:60px;">
+<div class="alb-step" style="text-align:center;padding:40px 24px;">
+<div style="font-size:56px;margin-bottom:16px;">✅</div>
+<h3 style="font-size:18px;margin-bottom:8px;font-family:var(--sans);font-weight:800;">Albarán registrado</h3>
+<p id="albSuccessText" style="color:var(--text-dim);font-size:14px;line-height:1.5;">Entradas guardadas correctamente.</p>
+<button class="btn" style="margin-top:24px;width:100%;" id="btnAlbaranHome">← VOLVER A INICIO</button>
+</div></div>
+</div></section>
 
 <!-- OVERLAYS -->
 <div class="toast" id="toast"></div>
@@ -282,7 +303,7 @@ body { background:var(--bg); color:var(--text); font-family:var(--sans); font-si
 ===================================================================== */
 const CONFIG = {
   API_URL: "https://script.google.com/macros/s/AKfycbz3F2G0PVAH2-6FXxwpfpOyr1Pvfw2cilycOQmyHLcXPxzXfwPCqVkLHMpXbVVP8YN8/exec",
-  APP_VERSION: "2.1"
+  APP_VERSION: "2.2"
 };
 
 /* =====================================================================
@@ -343,8 +364,7 @@ const STORAGE_KEY = "tgb_stock_v2";
 ===================================================================== */
 let state = loadState();
 let collapsedCats = new Set();
-let pendingPhoto = null;
-let currentTipoConteo = null; // "inicio" | "fin"
+let currentTipoConteo = null;
 
 function loadState() {
   try {
@@ -613,93 +633,170 @@ async function sendCount() {
 }
 
 /* =====================================================================
-   PANTALLA 4: ALBARÁN
-===================================================================== */
+   PANTALLA 4: ALBARÁN — OCR + REVISIÓN + CONFIRMACIÓN
+   ===================================================================== */
+let pendingPhoto   = null;
+let ocrResultItems = [];
+let ocrFileName    = null;
+
 document.getElementById("backFromAlbaran").addEventListener("click", () => { renderHome(); showScreen("screenHome"); });
+
+document.getElementById("goAlbaran").addEventListener("click", () => {
+  document.getElementById("albaranVenueTag").textContent = state.venue;
+  pendingPhoto = null; ocrResultItems = []; ocrFileName = null;
+  document.getElementById("photoPreview").classList.remove("show");
+  const st = document.getElementById("photoStatus");
+  st.classList.remove("show","success","error"); st.textContent = "";
+  document.getElementById("albFase1Send").style.display = "none";
+  document.getElementById("albFase1").style.display = "block";
+  document.getElementById("albFase2").style.display = "none";
+  document.getElementById("albFase3").style.display = "none";
+  showScreen("screenAlbaran");
+});
 
 document.getElementById("photoInput").addEventListener("change", async e => {
   const file = e.target.files[0];
   if (!file) return;
-  const status  = document.getElementById("photoStatus");
+  const isImage = file.type.startsWith("image/");
+  const status = document.getElementById("photoStatus");
   const preview = document.getElementById("photoPreview");
-  const img     = document.getElementById("photoImg");
   status.classList.remove("show","success","error");
-  status.textContent = "Procesando imagen...";
-  status.classList.add("show");
+  status.textContent = "Procesando..."; status.classList.add("show");
   try {
-    const dataUrl = await compressImage(file, 1600, 0.75);
-    const sizeKB  = Math.round((dataUrl.length * 3) / 4 / 1024);
-    img.src = dataUrl;
-    preview.classList.add("show");
-    pendingPhoto = { dataUrl, fileName: file.name, sizeKB };
-    status.textContent = `✓ Imagen lista (${sizeKB} KB)`;
+    let dataUrl;
+    if (isImage) {
+      dataUrl = await compressImage(file, 1600, 0.75);
+      document.getElementById("photoImg").src = dataUrl;
+      preview.classList.add("show");
+    } else {
+      dataUrl = await fileToBase64(file);
+      preview.classList.remove("show");
+    }
+    const sizeKB = Math.round((dataUrl.length * 3) / 4 / 1024);
+    pendingPhoto = { dataUrl, isImage, sizeKB, fileName: file.name };
+    status.textContent = (isImage ? "Foto lista" : "PDF listo") + " (" + sizeKB + " KB)";
     status.classList.add("success");
-    document.getElementById("albaranMeta").style.display = "block";
-    document.getElementById("albaranSummary").textContent =
-      `La foto se enviará a ${state.venue}. Tras enviarla, registra las entradas manualmente en el Google Sheets.`;
-  } catch(err) {
-    status.textContent = "Error al procesar la foto: " + err.message;
-    status.classList.add("error");
-  }
+    document.getElementById("albFase1Send").style.display = "block";
+  } catch(err) { status.textContent = "Error: " + err.message; status.classList.add("error"); }
 });
 
-document.getElementById("btnSendAlbaran").addEventListener("click", () => {
+document.getElementById("btnOcr").addEventListener("click", () => {
   if (!pendingPhoto) return;
   confirmAction(
-    `¿Enviar albarán de <span class="lime">${state.venue}</span>?`,
-    "Se enviará la foto al sistema para su registro.",
-    sendAlbaran
+    "¿Leer albarán de <span class=\"lime\">" + state.venue + "</span>?",
+    "El sistema leerá automáticamente los productos. Después podrás revisar y corregir.",
+    runOcr
   );
 });
 
-async function sendAlbaran() {
+async function runOcr() {
   const week = getWeekRange();
   const payload = {
-    type: "albaran",
-    venue: state.venue,
-    weekStart: week.start,
-    weekEnd: week.end,
+    type: "albaran_ocr", venue: state.venue,
+    weekStart: week.start, weekEnd: week.end,
     timestamp: new Date().toISOString(),
-    photoBase64: pendingPhoto.dataUrl,
-    fileName: pendingPhoto.fileName,
-    sizeKB: pendingPhoto.sizeKB,
-    appVersion: CONFIG.APP_VERSION
+    sizeKB: pendingPhoto.sizeKB, appVersion: CONFIG.APP_VERSION
   };
-  showLoading("Enviando albarán...");
+  if (pendingPhoto.isImage) payload.photoBase64 = pendingPhoto.dataUrl;
+  else payload.pdfBase64 = pendingPhoto.dataUrl;
+
+  showLoading("Leyendo albarán...");
+  try {
+    const res = await fetch(CONFIG.API_URL, {
+      method: "POST", mode: "cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || "Error backend");
+    ocrResultItems = data.result.items || [];
+    ocrFileName    = data.result.fileName || "";
+    hideLoading();
+    renderOcrTable(ocrResultItems);
+    document.getElementById("albFase1").style.display = "none";
+    document.getElementById("albFase2").style.display = "block";
+    const n = ocrResultItems.length;
+    document.getElementById("ocrSummary").textContent = n > 0
+      ? "Se han detectado " + n + " líneas. Revisa las cantidades antes de confirmar."
+      : "No se detectaron líneas. Puedes ajustar manualmente.";
+  } catch(err) { hideLoading(); showToast("Error OCR: " + err.message, "error"); }
+}
+
+function renderOcrTable(items) {
+  const cont = document.getElementById("ocrTable");
+  if (!items || items.length === 0) {
+    cont.innerHTML = '<p style="color:var(--text-dim);font-size:13px;padding:8px 0;">Sin productos detectados.</p>';
+    return;
+  }
+  const rows = items.map((it, i) => {
+    const mapped = it.mapeado ? '<div class="ocr-mapped">→ ' + escH(it.productoMaestro) + '</div>' : '';
+    const unk    = (!it.mapeado) ? ' unknown' : '';
+    return '<tr class="ocr-row' + unk + '">' +
+      '<td><div class="ocr-nombre">' + escH(it.producto) + '</div>' +
+      '<div class="ocr-codigo">' + escH(it.codigo) + '</div>' + mapped + '</td>' +
+      '<td><input class="ocr-qty" type="number" min="0" step="1" value="' + (it.cantidad||0) + '" data-idx="' + i + '"></td>' +
+      '</tr>';
+  }).join('');
+  cont.innerHTML = '<table class="ocr-table"><thead><tr><th>Producto</th><th>Cant.</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  cont.querySelectorAll('.ocr-qty').forEach(inp => {
+    inp.addEventListener('input', e => {
+      ocrResultItems[+e.target.dataset.idx].cantidad = parseFloat(e.target.value) || 0;
+    });
+  });
+}
+
+function escH(s) {
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+document.getElementById("btnConfirmarAlbaran").addEventListener("click", () => {
+  confirmAction(
+    "¿Confirmar entradas de <span class=\"lime\">" + state.venue + "</span>?",
+    "Se guardarán las cantidades como entradas reales de la semana.",
+    confirmarAlbaran
+  );
+});
+
+async function confirmarAlbaran() {
+  const week = getWeekRange();
+  const items = ocrResultItems.map(it => ({
+    codigo: it.codigo, producto: it.producto,
+    productoMaestro: it.productoMaestro || it.producto,
+    cantidad: it.cantidad || 0
+  }));
+  const payload = {
+    type: "albaran_confirmar", venue: state.venue,
+    weekStart: week.start, weekEnd: week.end,
+    fileName: ocrFileName, timestamp: new Date().toISOString(),
+    items: items, appVersion: CONFIG.APP_VERSION
+  };
+  showLoading("Guardando entradas...");
   const ok = await sendPayload(payload);
   hideLoading();
   if (ok) {
-    state.lastSync = new Date().toISOString(); saveState(); pendingPhoto = null;
-    showToast("✓ Albarán enviado", "success");
-    setTimeout(() => { renderHome(); showScreen("screenHome"); }, 1200);
+    state.lastSync = new Date().toISOString(); saveState();
+    const total = items.reduce((s,it) => s + (it.cantidad||0), 0);
+    document.getElementById("albSuccessText").textContent =
+      items.length + " productos · " + total + " uds totales registradas.";
+    document.getElementById("albFase2").style.display = "none";
+    document.getElementById("albFase3").style.display = "block";
+    setTimeout(() => {
+      const btn = document.getElementById("btnAlbaranHome");
+      if (btn) btn.onclick = () => { renderHome(); showScreen("screenHome"); };
+    }, 100);
   } else {
     enqueuePayload(payload);
-    showToast("Sin red. Guardado para reenvío", "error");
-    setTimeout(() => { renderHome(); showScreen("screenHome"); }, 1500);
+    showToast("Sin red. Guardado para reenvío automático", "error");
   }
 }
 
-function compressImage(file, maxDim, quality) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const img = new Image();
-      img.onload = () => {
-        let { width, height } = img;
-        if (width > maxDim || height > maxDim) {
-          const r = Math.min(maxDim/width, maxDim/height);
-          width = Math.round(width*r); height = Math.round(height*r);
-        }
-        const canvas = document.createElement("canvas");
-        canvas.width = width; canvas.height = height;
-        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL("image/jpeg", quality));
-      };
-      img.onerror = () => reject(new Error("imagen inválida"));
-      img.src = reader.result;
-    };
-    reader.onerror = () => reject(new Error("lectura"));
-    reader.readAsDataURL(file);
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = () => rej(new Error("lectura PDF"));
+    r.readAsDataURL(file);
   });
 }
 
