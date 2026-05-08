@@ -146,8 +146,6 @@ body { background:var(--bg); color:var(--text); font-family:var(--sans); font-si
 .spinner { width:40px; height:40px; border:3px solid var(--border); border-top-color:var(--lime); border-radius:50%; animation:spin 0.8s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }
 .loading-text { font-family:var(--mono); font-size:12px; color:var(--text-dim); letter-spacing:0.1em; text-transform:uppercase; }
-
-/* OCR albarán */
 .ocr-table{width:100%;border-collapse:collapse;margin-top:8px;}
 .ocr-table th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);padding:6px 8px;text-align:left;border-bottom:1px solid var(--border);}
 .ocr-table td{padding:10px 8px;border-bottom:1px solid var(--border);vertical-align:middle;}
@@ -162,7 +160,6 @@ body { background:var(--bg); color:var(--text); font-family:var(--sans); font-si
 </head>
 <body>
 
-<!-- PANTALLA 1: SELECCIÓN DE LOCAL -->
 <section id="screenSelect" class="screen">
 <div class="select-header">
   <div class="select-logo">TGB</div>
@@ -178,15 +175,12 @@ body { background:var(--bg); color:var(--text); font-family:var(--sans); font-si
 <div class="select-footer">GRUPO RECOBE · v2.2</div>
 </section>
 
-<!-- PANTALLA 2: HOME -->
 <section id="screenHome" class="screen">
 <div class="home-banner">Estás en <span class="venue-name" id="homeVenueName">—</span></div>
 <div class="pending-banner" id="pendingBanner">⏱ Hay datos pendientes de enviar</div>
 <div class="home-content">
   <div class="home-week" id="homeWeekLabel">SEMANA —</div>
-
   <p class="conteo-group-label">📋 Inventarios de la semana</p>
-
   <button class="action-btn primary" id="goCountInicio">
     <div class="action-icon">🟢</div>
     <div class="action-text">
@@ -194,7 +188,6 @@ body { background:var(--bg); color:var(--text); font-family:var(--sans); font-si
       <div class="action-meta" id="metaInicio">Inventario de apertura · lunes</div>
     </div>
   </button>
-
   <button class="action-btn secondary" id="goCountFin">
     <div class="action-icon">🔵</div>
     <div class="action-text">
@@ -202,7 +195,6 @@ body { background:var(--bg); color:var(--text); font-family:var(--sans); font-si
       <div class="action-meta" id="metaFin">Inventario de cierre · domingo</div>
     </div>
   </button>
-
   <button class="action-btn" id="goAlbaran">
     <div class="action-icon">📷</div>
     <div class="action-text">
@@ -210,7 +202,6 @@ body { background:var(--bg); color:var(--text); font-family:var(--sans); font-si
       <div class="action-meta">Foto del albarán del camión</div>
     </div>
   </button>
-
   <div class="last-sync" id="lastSync">Última sincronización: nunca</div>
 </div>
 <div class="home-footer">
@@ -218,7 +209,6 @@ body { background:var(--bg); color:var(--text); font-family:var(--sans); font-si
 </div>
 </section>
 
-<!-- PANTALLA 3: CONTEO -->
 <section id="screenCount" class="screen">
 <div class="count-header">
   <div class="count-bar">
@@ -243,7 +233,6 @@ body { background:var(--bg); color:var(--text); font-family:var(--sans); font-si
 </footer>
 </section>
 
-<!-- PANTALLA 4: ALBARÁN -->
 <section id="screenAlbaran" class="screen">
 <div class="count-header"><div class="count-bar">
 <button class="back-btn" id="backFromAlbaran">←</button>
@@ -280,7 +269,6 @@ body { background:var(--bg); color:var(--text); font-family:var(--sans); font-si
 </div></div>
 </div></section>
 
-<!-- OVERLAYS -->
 <div class="toast" id="toast"></div>
 <div class="modal-backdrop" id="confirmModal">
   <div class="modal">
@@ -296,13 +284,12 @@ body { background:var(--bg); color:var(--text); font-family:var(--sans); font-si
   <div class="spinner"></div>
   <div class="loading-text" id="loadingText">Enviando...</div>
 </div>
-
 <script>
 /* =====================================================================
    CONFIGURACIÓN
 ===================================================================== */
 const CONFIG = {
-  API_URL: "https://script.google.com/macros/s/AKfycbz3F2G0PVAH2-6FXxwpfpOyr1Pvfw2cilycOQmyHLcXPxzXfwPCqVkLHMpXbVVP8YN8/exec",
+  API_URL: "https://script.google.com/macros/s/AKfycbzu9zVzgrABJ_vHoHuuNoXtkz3btZvJApfge67V7YMhU6XDvSzbWBI5xZt7Gp0FNOEVTw/exec",
   APP_VERSION: "2.2"
 };
 
@@ -360,7 +347,6 @@ const STORAGE_KEY = "tgb_stock_v2";
 
 /* =====================================================================
    ESTADO + PERSISTENCIA
-   counts_inicio y counts_fin son objetos separados por tipo de conteo
 ===================================================================== */
 let state = loadState();
 let collapsedCats = new Set();
@@ -380,16 +366,12 @@ function loadState() {
     return parsed;
   } catch(e) { return defaultState(); }
 }
-
 function defaultState() {
   return { venue:null, counts_inicio:{}, counts_fin:{}, responsable:"", lastSync:null, pendingQueue:[] };
 }
-
 function saveState() {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
 }
-
-/* Devuelve el objeto counts activo según tipo de conteo */
 function getCounts() {
   return currentTipoConteo === "fin" ? state.counts_fin : state.counts_inicio;
 }
@@ -402,7 +384,6 @@ function showScreen(id) {
   document.getElementById(id).classList.add("active");
   window.scrollTo(0, 0);
 }
-
 function bootstrap() {
   if (!state.venue) { showScreen("screenSelect"); }
   else { renderHome(); showScreen("screenHome"); if (state.pendingQueue.length > 0) processPendingQueue(); }
@@ -428,14 +409,12 @@ document.querySelectorAll(".venue-card").forEach(btn => {
 function renderHome() {
   document.getElementById("homeVenueName").textContent = state.venue;
   document.getElementById("homeWeekLabel").textContent = getWeekLabel();
-
   const cntInicio = Object.keys(state.counts_inicio).length;
   const cntFin    = Object.keys(state.counts_fin).length;
   document.getElementById("metaInicio").textContent =
-    cntInicio > 0 ? `✓ ${cntInicio}/44 contados · lunes` : "Inventario de apertura · lunes";
+    cntInicio > 0 ? `✓ ${cntInicio}/${PRODUCTOS.length} contados · lunes` : "Inventario de apertura · lunes";
   document.getElementById("metaFin").textContent =
-    cntFin > 0    ? `✓ ${cntFin}/44 contados · domingo`  : "Inventario de cierre · domingo";
-
+    cntFin > 0    ? `✓ ${cntFin}/${PRODUCTOS.length} contados · domingo`  : "Inventario de cierre · domingo";
   const sync = document.getElementById("lastSync");
   if (state.lastSync) {
     const d = new Date(state.lastSync);
@@ -444,7 +423,6 @@ function renderHome() {
   } else {
     sync.textContent = "Última sincronización: nunca";
   }
-
   const pending = document.getElementById("pendingBanner");
   if (state.pendingQueue.length > 0) {
     pending.classList.add("show");
@@ -466,16 +444,19 @@ function openConteo(tipo) {
   updateProgress();
   showScreen("screenCount");
 }
-
 document.getElementById("goCountInicio").addEventListener("click", () => openConteo("inicio"));
 document.getElementById("goCountFin").addEventListener("click",    () => openConteo("fin"));
 
 document.getElementById("goAlbaran").addEventListener("click", () => {
   document.getElementById("albaranVenueTag").textContent = state.venue;
-  pendingPhoto = null;
+  pendingPhoto = null; ocrResultItems = []; ocrFileName = null;
   document.getElementById("photoPreview").classList.remove("show");
-  document.getElementById("photoStatus").classList.remove("show","success","error");
-  document.getElementById("albaranMeta").style.display = "none";
+  const st = document.getElementById("photoStatus");
+  st.classList.remove("show","success","error"); st.textContent = "";
+  document.getElementById("albFase1Send").style.display = "none";
+  document.getElementById("albFase1").style.display = "block";
+  document.getElementById("albFase2").style.display = "none";
+  document.getElementById("albFase3").style.display = "none";
   showScreen("screenAlbaran");
 });
 
@@ -488,7 +469,6 @@ document.getElementById("changeVenueBtn").addEventListener("click", () => {
    PANTALLA 3: CONTEO
 ===================================================================== */
 document.getElementById("backFromCount").addEventListener("click", () => { renderHome(); showScreen("screenHome"); });
-
 document.getElementById("responsable").addEventListener("input", e => {
   state.responsable = e.target.value; saveState();
 });
@@ -501,10 +481,8 @@ function renderCategories() {
     if (!seen.has(p.cat)) { const arr=[]; seen.set(p.cat, arr); groups.push({cat:p.cat, items:arr}); }
     seen.get(p.cat).push(p);
   });
-
   const counts = getCounts();
   const esFin = currentTipoConteo === "fin";
-
   container.innerHTML = groups.map(g => {
     const counted = g.items.filter(it => counts[it.id] !== undefined && counts[it.id] !== "").length;
     const isCollapsed = collapsedCats.has(g.cat);
@@ -533,7 +511,6 @@ function renderCategories() {
       h.parentElement.classList.toggle("collapsed");
     });
   });
-
   container.querySelectorAll(".product-input").forEach(inp => {
     inp.addEventListener("input", e => {
       const pid = e.target.dataset.pid;
@@ -601,10 +578,9 @@ async function sendCount() {
     id: p.id, nombre: p.nombre, und: p.und, categoria: p.cat,
     cantidad: counts[p.id] !== undefined && counts[p.id] !== "" ? Number(counts[p.id]) : null
   }));
-
   const payload = {
     type: "conteo",
-    tipoConteo: currentTipoConteo,   // ← NUEVO: "inicio" | "fin"
+    tipoConteo: currentTipoConteo,
     venue: state.venue,
     weekStart: week.start,
     weekEnd: week.end,
@@ -613,13 +589,10 @@ async function sendCount() {
     items: items,
     appVersion: CONFIG.APP_VERSION
   };
-
   showLoading("Enviando conteo...");
   const ok = await sendPayload(payload);
   hideLoading();
-
   if (ok) {
-    // Limpiar sólo el tipo enviado
     if (currentTipoConteo === "fin") state.counts_fin = {}; else state.counts_inicio = {};
     state.lastSync = new Date().toISOString();
     saveState();
@@ -634,25 +607,12 @@ async function sendCount() {
 
 /* =====================================================================
    PANTALLA 4: ALBARÁN — OCR + REVISIÓN + CONFIRMACIÓN
-   ===================================================================== */
+===================================================================== */
 let pendingPhoto   = null;
 let ocrResultItems = [];
 let ocrFileName    = null;
 
 document.getElementById("backFromAlbaran").addEventListener("click", () => { renderHome(); showScreen("screenHome"); });
-
-document.getElementById("goAlbaran").addEventListener("click", () => {
-  document.getElementById("albaranVenueTag").textContent = state.venue;
-  pendingPhoto = null; ocrResultItems = []; ocrFileName = null;
-  document.getElementById("photoPreview").classList.remove("show");
-  const st = document.getElementById("photoStatus");
-  st.classList.remove("show","success","error"); st.textContent = "";
-  document.getElementById("albFase1Send").style.display = "none";
-  document.getElementById("albFase1").style.display = "block";
-  document.getElementById("albFase2").style.display = "none";
-  document.getElementById("albFase3").style.display = "none";
-  showScreen("screenAlbaran");
-});
 
 document.getElementById("photoInput").addEventListener("change", async e => {
   const file = e.target.files[0];
@@ -683,7 +643,7 @@ document.getElementById("photoInput").addEventListener("change", async e => {
 document.getElementById("btnOcr").addEventListener("click", () => {
   if (!pendingPhoto) return;
   confirmAction(
-    "¿Leer albarán de <span class=\"lime\">" + state.venue + "</span>?",
+    `¿Leer albarán de <span class="lime">${state.venue}</span>?`,
     "El sistema leerá automáticamente los productos. Después podrás revisar y corregir.",
     runOcr
   );
@@ -699,7 +659,6 @@ async function runOcr() {
   };
   if (pendingPhoto.isImage) payload.photoBase64 = pendingPhoto.dataUrl;
   else payload.pdfBase64 = pendingPhoto.dataUrl;
-
   showLoading("Leyendo albarán...");
   try {
     const res = await fetch(CONFIG.API_URL, {
@@ -752,7 +711,7 @@ function escH(s) {
 
 document.getElementById("btnConfirmarAlbaran").addEventListener("click", () => {
   confirmAction(
-    "¿Confirmar entradas de <span class=\"lime\">" + state.venue + "</span>?",
+    `¿Confirmar entradas de <span class="lime">${state.venue}</span>?`,
     "Se guardarán las cantidades como entradas reales de la semana.",
     confirmarAlbaran
   );
@@ -791,6 +750,29 @@ async function confirmarAlbaran() {
   }
 }
 
+function compressImage(file, maxSize, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w > h && w > maxSize) { h = h * (maxSize / w); w = maxSize; }
+        else if (h > maxSize) { w = w * (maxSize / h); h = maxSize; }
+        const canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.onerror = () => reject(new Error("imagen no válida"));
+      img.src = reader.result;
+    };
+    reader.onerror = () => reject(new Error("lectura imagen"));
+    reader.readAsDataURL(file);
+  });
+}
+
 function fileToBase64(file) {
   return new Promise((res, rej) => {
     const r = new FileReader();
@@ -810,82 +792,4 @@ async function sendPayload(payload) {
   try {
     const res = await fetch(CONFIG.API_URL, {
       method: "POST", mode: "cors",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const data = await res.json().catch(() => ({}));
-    if (data.ok === false) throw new Error(data.error || "respuesta no OK");
-    return true;
-  } catch(e) { console.error("Error envío:", e); return false; }
-}
-
-function enqueuePayload(payload) { state.pendingQueue.push(payload); saveState(); }
-
-async function processPendingQueue() {
-  if (!state.pendingQueue || state.pendingQueue.length === 0) return;
-  const queue = [...state.pendingQueue];
-  for (const p of queue) {
-    const ok = await sendPayload(p);
-    if (ok) {
-      state.pendingQueue = state.pendingQueue.filter(x => x !== p);
-      state.lastSync = new Date().toISOString();
-      saveState(); renderHome();
-    } else { break; }
-  }
-}
-window.addEventListener("online", processPendingQueue);
-
-/* =====================================================================
-   UTILIDADES
-===================================================================== */
-function getWeekLabel() {
-  const r = getWeekRange();
-  const fmt = s => { const [y,m,d] = s.split("-"); return `${d}/${m}`; };
-  return `SEM ${fmt(r.start)} – ${fmt(r.end)}`;
-}
-function getWeekRange() {
-  const today = new Date();
-  const day = today.getDay();
-  const diffToMonday = (day === 0 ? -6 : 1 - day);
-  const monday = new Date(today); monday.setDate(today.getDate() + diffToMonday);
-  const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6);
-  const fmt = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-  return { start: fmt(monday), end: fmt(sunday) };
-}
-
-let toastTimer = null;
-function showToast(msg, type) {
-  const t = document.getElementById("toast");
-  t.textContent = msg; t.classList.remove("success","error");
-  if (type) t.classList.add(type); t.classList.add("show");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove("show"), 3000);
-}
-
-function confirmAction(title, text, onConfirm) {
-  const modal = document.getElementById("confirmModal");
-  document.getElementById("modalTitle").innerHTML = title;
-  document.getElementById("modalText").textContent = text;
-  modal.classList.add("show");
-  const cleanup = () => {
-    modal.classList.remove("show");
-    document.getElementById("modalConfirm").onclick = null;
-    document.getElementById("modalCancel").onclick = null;
-    modal.onclick = null;
-  };
-  document.getElementById("modalConfirm").onclick = () => { cleanup(); onConfirm(); };
-  document.getElementById("modalCancel").onclick = cleanup;
-  modal.onclick = e => { if (e.target === modal) cleanup(); };
-}
-
-function showLoading(text) {
-  document.getElementById("loadingText").textContent = text || "Procesando...";
-  document.getElementById("loadingOverlay").classList.add("show");
-}
-function hideLoading() { document.getElementById("loadingOverlay").classList.remove("show"); }
-
-bootstrap();
-</script>
-</body>
-</html>
+      headers: { "Content-Type": "
