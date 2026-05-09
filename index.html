@@ -663,7 +663,7 @@
       <div class="action-icon">📋</div>
       <div class="action-text">
         <div class="action-title">CONTEO LUNES</div>
-        <div class="action-meta">Inventario semanal · 44 productos</div>
+        <div class="action-meta">Inventario semanal · 43 productos</div>
       </div>
     </button>
 
@@ -744,7 +744,7 @@
     <div class="alb-step" id="albaranMeta" style="display:none;">
       <h3>2 · Confirmar envío</h3>
       <p id="albaranSummary">Foto lista para enviar.</p>
-      <button class="btn btn-primary" style="width:100%;padding:18px;" id="btnSendAlbaran">ENVIAR ALBARÁN</button>
+      <button class="btn btn-primary" style="width:100%;padding:18px;" id="btnSendAlbaran">ENVIAR Y REVISAR LÍNEAS</button>
     </div>
   </div>
 </section>
@@ -779,7 +779,7 @@ const CONFIG = {
   // La obtendrás siguiendo la guía de instalación.
   // Ejemplo: "https://script.google.com/macros/s/AKfycbx.../exec"
   API_URL: "https://script.google.com/macros/s/AKfycbz3F2G0PVAH2-6FXxwpfpOyr1Pvfw2cilycOQmyHLcXPxzXfwPCqVkLHMpXbVVP8YN8/exec",
-  APP_VERSION: "2.1"
+  APP_VERSION: "2.2"
 };
 
 /* =====================================================================
@@ -841,6 +841,7 @@ const VENUES = ["TOLOSA", "ZURRIOLA", "BALLONTI"];
 let state = loadState();
 let collapsedCats = new Set();
 let pendingPhoto = null; // { dataUrl, fileName, sizeKB }
+let pendingAlbaranOCR = null; // { fileName, venue, weekStart, items, photoDataUrl }
 
 function loadState() {
   try {
@@ -1187,7 +1188,7 @@ document.getElementById("btnSendAlbaran").addEventListener("click", () => {
 async function sendAlbaran() {
   const week = getWeekRange();
   const payload = {
-    type: "albaran",
+    type: "albaran_ocr",
     venue: state.venue,
     weekStart: week.start,
     weekEnd: week.end,
@@ -1198,20 +1199,25 @@ async function sendAlbaran() {
     appVersion: CONFIG.APP_VERSION
   };
 
-  showLoading("Enviando albarán...");
-  const ok = await sendPayload(payload);
+  showLoading("Subiendo y leyendo albaran…");
+  const resp = await sendPayloadJson(payload);
   hideLoading();
 
-  if (ok) {
+  if (resp && resp.ok && resp.result) {
+    // Ir a pantalla revisión con los items detectados
+    pendingAlbaranOCR = {
+      fileName: resp.result.fileName,
+      venue: resp.result.venue,
+      weekStart: resp.result.weekStart,
+      items: resp.result.items || [],
+      photoDataUrl: pendingPhoto.dataUrl
+    };
     state.lastSync = new Date().toISOString();
     saveState();
-    pendingPhoto = null;
-    showToast("✓ Albarán enviado", "success");
-    setTimeout(() => { renderHome(); showScreen("screenHome"); }, 1200);
+    renderRevisar();
+    showScreen("screenRevisar");
   } else {
-    enqueuePayload(payload);
-    showToast("Sin red. Guardado para reenvío", "error");
-    setTimeout(() => { renderHome(); showScreen("screenHome"); }, 1500);
+    showToast("Error al procesar albaran. Reintenta", "error");
   }
 }
 
@@ -1267,6 +1273,137 @@ async function sendPayload(payload) {
   } catch (e) {
     console.error("Error envío:", e);
     return false;
+  }
+}
+
+
+
+async function sendPayloadJson(payload) {
+  if (!CONFIG.API_URL || CONFIG.API_URL.startsWith("PEGA_")) return null;
+  try {
+    const res = await fetch(CONFIG.API_URL, {
+      method: "POST",
+      mode: "cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    return await res.json();
+  } catch (e) {
+    console.error("sendPayloadJson:", e);
+    return null;
+  }
+}
+
+/* ===== PANTALLA REVISIÓN ===== */
+function renderRevisar() {
+  document.getElementById("revisarVenueTag").textContent = pendingAlbaranOCR.venue;
+  const img = document.getElementById("revPhotoImg");
+  if (pendingAlbaranOCR.photoDataUrl) {
+    img.src = pendingAlbaranOCR.photoDataUrl;
+    document.getElementById("revPhotoThumb").style.display = "block";
+  } else {
+    document.getElementById("revPhotoThumb").style.display = "none";
+  }
+  renderRevList();
+}
+
+function renderRevList() {
+  const list = document.getElementById("revList");
+  const items = pendingAlbaranOCR.items;
+  if (!items || items.length === 0) {
+    list.innerHTML = '<div class="rev-empty">No se detectaron líneas. Pulsa + AÑADIR LÍNEA para introducirlas a mano.</div>';
+    return;
+  }
+  list.innerHTML = items.map((it, i) => {
+    const opciones = ['<option value="">— Sin asignar —</option>']
+      .concat(PRODUCTOS.map(p => {
+        const sel = (it.productoMaestro || '').toLowerCase() === p.nombre.toLowerCase() ? 'selected' : '';
+        return '<option value="' + p.nombre.replace(/"/g,'&quot;') + '" ' + sel + '>' + p.nombre + '</option>';
+      })).join('');
+    const unmapped = !it.mapeado ? ' unmapped' : '';
+    return '<div class="rev-item' + unmapped + '" data-idx="' + i + '">' +
+      '<div class="rev-item-fields">' +
+        '<div class="rev-row"><label>Código</label><input class="rev-input" data-field="codigo" value="' + (it.codigo||'').replace(/"/g,'&quot;') + '" placeholder="ERE..."></div>' +
+        '<div class="rev-row"><label>Logirest</label><input class="rev-input" data-field="producto" value="' + (it.producto||'').replace(/"/g,'&quot;') + '" placeholder="Texto del albarán"></div>' +
+        '<div class="rev-row"><label>Maestro</label><select class="rev-select" data-field="productoMaestro">' + opciones + '</select></div>' +
+      '</div>' +
+      '<div class="rev-actions">' +
+        '<input class="rev-qty" type="number" inputmode="decimal" step="0.01" min="0" data-field="cantidad" value="' + (it.cantidad!==undefined?it.cantidad:'') + '">' +
+        '<button class="rev-del" type="button">×</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  // Listeners
+  list.querySelectorAll('.rev-input, .rev-select, .rev-qty').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const idx = parseInt(e.target.closest('.rev-item').dataset.idx, 10);
+      const field = e.target.dataset.field;
+      pendingAlbaranOCR.items[idx][field] = field === 'cantidad' ? Number(e.target.value) || 0 : e.target.value;
+    });
+  });
+  list.querySelectorAll('.rev-del').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const idx = parseInt(e.target.closest('.rev-item').dataset.idx, 10);
+      pendingAlbaranOCR.items.splice(idx, 1);
+      renderRevList();
+    });
+  });
+}
+
+document.getElementById("btnRevAdd").addEventListener("click", () => {
+  pendingAlbaranOCR.items.push({codigo:"", producto:"", productoMaestro:"", cantidad:0, mapeado:false});
+  renderRevList();
+});
+
+document.getElementById("backFromRevisar").addEventListener("click", () => {
+  confirmAction("¿Volver atrás?", "Perderás las líneas revisadas. La foto seguirá guardada en el sistema.", () => {
+    pendingAlbaranOCR = null;
+    renderHome();
+    showScreen("screenHome");
+  });
+});
+
+document.getElementById("btnRevCancel").addEventListener("click", () => {
+  document.getElementById("backFromRevisar").click();
+});
+
+document.getElementById("btnRevConfirm").addEventListener("click", () => {
+  const items = pendingAlbaranOCR.items.filter(it => (it.codigo || it.producto || it.productoMaestro) && Number(it.cantidad) > 0);
+  if (items.length === 0) { showToast("No hay líneas válidas", "error"); return; }
+  confirmAction(
+    '¿Confirmar <span class="lime">' + items.length + ' líneas</span>?',
+    'Se enviarán al Excel como entrada de stock para ' + pendingAlbaranOCR.venue + '. No se podrán modificar después.',
+    confirmarAlbaran
+  );
+});
+
+async function confirmarAlbaran() {
+  const items = pendingAlbaranOCR.items.filter(it => (it.codigo || it.producto || it.productoMaestro) && Number(it.cantidad) > 0);
+  const payload = {
+    type: "albaran_confirmar",
+    venue: pendingAlbaranOCR.venue,
+    weekStart: pendingAlbaranOCR.weekStart,
+    fileName: pendingAlbaranOCR.fileName,
+    timestamp: new Date().toISOString(),
+    items: items,
+    appVersion: CONFIG.APP_VERSION
+  };
+  showLoading("Enviando líneas…");
+  const ok = await sendPayload(payload);
+  hideLoading();
+  if (ok) {
+    pendingAlbaranOCR = null;
+    pendingPhoto = null;
+    state.lastSync = new Date().toISOString();
+    saveState();
+    showToast("✓ Albarán confirmado", "success");
+    setTimeout(() => { renderHome(); showScreen("screenHome"); }, 1200);
+  } else {
+    enqueuePayload(payload);
+    showToast("Sin red. Guardado para reenvío", "error");
+    setTimeout(() => { renderHome(); showScreen("screenHome"); }, 1500);
   }
 }
 
