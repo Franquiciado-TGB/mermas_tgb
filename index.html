@@ -481,7 +481,82 @@
   .photo-status.success { color: var(--ok); border: 1px solid var(--ok); }
   .photo-status.error { color: var(--err); border: 1px solid var(--err); }
 
-  /* ============================================================
+  
+/* ============================================================
+   PANTALLA 5: REVISI&#211;N DE ALBAR&#193;N (post-OCR)
+   ============================================================ */
+#screenRevisar { display: none; padding-bottom: 110px; }
+#screenRevisar.active { display: block; }
+.rev-info {
+  padding: 14px 16px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+.rev-info b { color: var(--lime); }
+.rev-list { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.rev-item {
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px;
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 8px; align-items: start;
+}
+.rev-item.unmapped { border-color: var(--warn); background: rgba(245, 158, 11, 0.05); }
+.rev-item-fields { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.rev-row { display: flex; gap: 8px; align-items: center; }
+.rev-row label {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.1em; color: var(--text-faint);
+  text-transform: uppercase; width: 60px; flex-shrink: 0;
+}
+.rev-input, .rev-select {
+  flex: 1; min-width: 0;
+  background: var(--bg-3); border: 1px solid var(--border);
+  color: var(--text); padding: 8px 10px;
+  font-family: var(--sans); font-size: 14px; border-radius: 6px;
+}
+.rev-input:focus, .rev-select:focus { outline: none; border-color: var(--lime); }
+.rev-qty {
+  width: 80px; text-align: right;
+  background: var(--bg-3); border: 1px solid var(--border-strong);
+  color: var(--lime); padding: 10px;
+  font-family: var(--mono); font-size: 18px; font-weight: 700;
+  border-radius: 6px;
+}
+.rev-qty:focus { outline: none; border-color: var(--lime); background: var(--bg); }
+.rev-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+.rev-del {
+  background: none; border: 1px solid var(--err);
+  color: var(--err); width: 32px; height: 32px;
+  border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: 700;
+}
+.rev-del:active { background: var(--err); color: #fff; }
+.rev-add {
+  margin: 12px;
+  background: var(--bg-3);
+  border: 1px dashed var(--border-strong);
+  color: var(--text); padding: 14px;
+  border-radius: 8px; cursor: pointer;
+  font-family: var(--mono); font-size: 12px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  width: calc(100% - 24px);
+}
+.rev-add:active { background: var(--bg-2); }
+.rev-photo-thumb {
+  margin: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden; max-height: 200px;
+}
+.rev-photo-thumb img { width: 100%; display: block; }
+.rev-empty {
+  padding: 30px; text-align: center;
+  color: var(--text-faint); font-family: var(--mono); font-size: 12px;
+}
+
+/* ============================================================
      FOOTER FIJO (bot&#243;n enviar)
      ============================================================ */
   .footer {
@@ -632,15 +707,15 @@
   <div class="venue-cards">
     <button class="venue-card" data-venue="TOLOSA">
       <span class="venue-card-name">TOLOSA</span>
-      <span class="venue-card-arrow">&#226;&#134;&#146;</span>
+      <span class="venue-card-arrow">&#8594;</span>
     </button>
     <button class="venue-card" data-venue="ZURRIOLA">
       <span class="venue-card-name">ZURRIOLA</span>
-      <span class="venue-card-arrow">&#226;&#134;&#146;</span>
+      <span class="venue-card-arrow">&#8594;</span>
     </button>
     <button class="venue-card" data-venue="BALLONTI">
       <span class="venue-card-name">BALLONTI</span>
-      <span class="venue-card-arrow">&#226;&#134;&#146;</span>
+      <span class="venue-card-arrow">&#8594;</span>
     </button>
   </div>
   <div class="select-footer">GRUPO RECOBE &#183; v2.0</div>
@@ -651,16 +726,16 @@
      ================================================================ -->
 <section id="screenHome" class="screen">
   <div class="home-banner">
-    Est&#225;s en <span class="venue-name" id="homeVenueName">&#226;&#128;&#148;</span>
+    Est&#225;s en <span class="venue-name" id="homeVenueName">&#8212;</span>
   </div>
   <div class="pending-banner" id="pendingBanner">
-    &#226;&#143;&#177; Hay datos pendientes de enviar
+    &#9201; Hay datos pendientes de enviar
   </div>
   <div class="home-content">
-    <div class="home-week" id="homeWeekLabel">SEMANA &#226;&#128;&#148;</div>
+    <div class="home-week" id="homeWeekLabel">SEMANA &#8212;</div>
 
     <button class="action-btn primary" id="goCount">
-      <div class="action-icon">&#240;&#159;&#147;&#139;</div>
+      <div class="action-icon">&#128203;</div>
       <div class="action-text">
         <div class="action-title">CONTEO LUNES</div>
         <div class="action-meta">Inventario semanal &#183; 43 productos</div>
@@ -668,7 +743,7 @@
     </button>
 
     <button class="action-btn" id="goAlbaran">
-      <div class="action-icon">&#240;&#159;&#147;&#183;</div>
+      <div class="action-icon">&#128247;</div>
       <div class="action-text">
         <div class="action-title">ALBAR&#193;N ENTRADA</div>
         <div class="action-meta">Foto del albar&#225;n del cami&#243;n</div>
@@ -678,7 +753,7 @@
     <div class="last-sync" id="lastSync">&#218;ltima sincronizaci&#243;n: nunca</div>
   </div>
   <div class="home-footer">
-    <button class="link-btn" id="changeVenueBtn">&#226;&#154;&#153; Cambiar local</button>
+    <button class="link-btn" id="changeVenueBtn">&#9881; Cambiar local</button>
   </div>
 </section>
 
@@ -688,9 +763,9 @@
 <section id="screenCount" class="screen">
   <div class="count-header">
     <div class="count-bar">
-      <button class="back-btn" id="backFromCount">&#226;&#134;&#144;</button>
+      <button class="back-btn" id="backFromCount">&#8592;</button>
       <div class="count-title">CONTEO INVENTARIO</div>
-      <div class="count-venue-tag" id="countVenueTag">&#226;&#128;&#148;</div>
+      <div class="count-venue-tag" id="countVenueTag">&#8212;</div>
     </div>
     <div class="progress-bar-wrap">
       <span class="progress-text">PROGRESO</span>
@@ -718,9 +793,9 @@
 <section id="screenAlbaran" class="screen">
   <div class="count-header">
     <div class="count-bar">
-      <button class="back-btn" id="backFromAlbaran">&#226;&#134;&#144;</button>
+      <button class="back-btn" id="backFromAlbaran">&#8592;</button>
       <div class="count-title">ALBAR&#193;N ENTRADA</div>
-      <div class="count-venue-tag" id="albaranVenueTag">&#226;&#128;&#148;</div>
+      <div class="count-venue-tag" id="albaranVenueTag">&#8212;</div>
     </div>
   </div>
 
@@ -730,7 +805,7 @@
       <p>Apunta al albar&#225;n completo. Aseg&#250;rate de que se ve bien la lista de productos y cantidades. Si hay varias p&#225;ginas, hazlas una a una.</p>
       <div class="photo-input-wrap">
         <button class="photo-trigger">
-          <span class="photo-icon">&#240;&#159;&#147;&#183;</span>
+          <span class="photo-icon">&#128247;</span>
           <span>HACER FOTO</span>
         </button>
         <input type="file" class="photo-input" id="photoInput" accept="image/*" capture="environment">
@@ -762,13 +837,10 @@
       <div class="count-venue-tag" id="revisarVenueTag">&#8212;</div>
     </div>
   </div>
-  <div class="rev-info">
-    Revisa las l&#237;neas detectadas. Edita lo que sea incorrecto y elimina las que no quieras enviar.
-  </div>
+  <div class="rev-info">Revisa las l&#237;neas detectadas. Edita lo que sea incorrecto y elimina las que no quieras enviar.</div>
   <div class="rev-photo-thumb" id="revPhotoThumb"><img id="revPhotoImg" alt=""></div>
   <div class="rev-list" id="revList"></div>
   <button class="rev-add" id="btnRevAdd">+ A&#209;ADIR L&#205;NEA</button>
-
   <footer class="footer">
     <button class="btn btn-ghost" id="btnRevCancel">Cancelar</button>
     <button class="btn btn-primary" id="btnRevConfirm">Confirmar y enviar</button>
@@ -783,7 +855,7 @@
 <div class="modal-backdrop" id="confirmModal">
   <div class="modal">
     <h3 id="modalTitle">Confirmar</h3>
-    <p id="modalText">&#226;&#128;&#148;</p>
+    <p id="modalText">&#8212;</p>
     <div class="modal-actions">
       <button class="btn" id="modalCancel">Cancelar</button>
       <button class="btn btn-primary" id="modalConfirm">Confirmar</button>
@@ -798,7 +870,7 @@
 
 <script>
 /* =====================================================================
-   \u00e2\u009a\u0099\u00ef\u00b8\u008f CONFIGURACI\u00d3N \u00e2\u0080\u0094 EDITAR ESTAS L\u00cdNEAS DESPU\u00c9S DE PUBLICAR APPS SCRIPT
+   \u2699\ufe0f CONFIGURACI\u00d3N \u2014 EDITAR ESTAS L\u00cdNEAS DESPU\u00c9S DE PUBLICAR APPS SCRIPT
    ===================================================================== */
 const CONFIG = {
   // Pega aqu\u00ed la URL del Apps Script publicado como Web App.
@@ -809,7 +881,7 @@ const CONFIG = {
 };
 
 /* =====================================================================
-   MAESTRO DE PRODUCTOS \u00e2\u0080\u0094 id\u00e9ntico al Excel maestro
+   MAESTRO DE PRODUCTOS \u2014 id\u00e9ntico al Excel maestro
    ===================================================================== */
 const PRODUCTOS = [
   { cat: "Prote\u00edna",  nombre: "Hamburguesa Vacuno 100g",   und: "uds" },
@@ -958,7 +1030,7 @@ function renderHome() {
   const pending = document.getElementById("pendingBanner");
   if (state.pendingQueue.length > 0) {
     pending.classList.add("show");
-    pending.textContent = `\u00e2\u008f\u00b1 ${state.pendingQueue.length} env\u00edo(s) pendiente(s) \u00e2\u0080\u0094 reintentando...`;
+    pending.textContent = `\u23f1 ${state.pendingQueue.length} env\u00edo(s) pendiente(s) \u2014 reintentando...`;
   } else {
     pending.classList.remove("show");
   }
@@ -1026,7 +1098,7 @@ function renderCategories() {
     return `
       <section class="category ${isCollapsed ? "collapsed" : ""}" data-cat="${g.cat}">
         <div class="category-header">
-          <span class="category-name">\u00e2\u0096\u00b8 ${g.cat}</span>
+          <span class="category-name">\u25b8 ${g.cat}</span>
           <div class="category-meta">
             <span data-cat-progress="${g.cat}">${counted}/${g.items.length}</span>
             <div class="chevron"></div>
@@ -1042,7 +1114,7 @@ function renderCategories() {
                   <div class="product-name">${it.nombre}</div>
                   <div class="product-unit">${it.und}</div>
                 </div>
-                <input class="product-input" type="number" inputmode="decimal" step="0.01" min="0" placeholder="\u00e2\u0080\u0094" value="${has ? v : ""}" data-pid="${it.id}">
+                <input class="product-input" type="number" inputmode="decimal" step="0.01" min="0" placeholder="\u2014" value="${has ? v : ""}" data-pid="${it.id}">
               </div>`;
           }).join("")}
         </div>
@@ -1152,7 +1224,7 @@ async function sendCount() {
     state.counts = {};  // limpiar para la siguiente semana
     state.lastSync = new Date().toISOString();
     saveState();
-    showToast("\u00e2\u009c\u0093 Conteo enviado correctamente", "success");
+    showToast("\u2713 Conteo enviado correctamente", "success");
     setTimeout(() => {
       renderHome();
       showScreen("screenHome");
@@ -1190,7 +1262,7 @@ document.getElementById("photoInput").addEventListener("change", async e => {
     img.src = dataUrl;
     preview.classList.add("show");
     pendingPhoto = { dataUrl, fileName: file.name, sizeKB };
-    status.textContent = `\u00e2\u009c\u0093 Imagen lista (${sizeKB} KB)`;
+    status.textContent = `\u2713 Imagen lista (${sizeKB} KB)`;
     status.classList.add("success");
 
     document.getElementById("albaranMeta").style.display = "block";
@@ -1224,13 +1296,10 @@ async function sendAlbaran() {
     sizeKB: pendingPhoto.sizeKB,
     appVersion: CONFIG.APP_VERSION
   };
-
-  showLoading("Subiendo y leyendo albaran\u00e2\u0080\u00a6");
+  showLoading("Subiendo y leyendo albaran...");
   const resp = await sendPayloadJson(payload);
   hideLoading();
-
   if (resp && resp.ok && resp.result) {
-    // Ir a pantalla revisi\u00f3n con los items detectados
     pendingAlbaranOCR = {
       fileName: resp.result.fileName,
       venue: resp.result.venue,
@@ -1281,7 +1350,7 @@ function compressImage(file, maxDim, quality) {
 async function sendPayload(payload) {
   if (!CONFIG.API_URL || CONFIG.API_URL.startsWith("PEGA_")) {
     console.warn("API_URL no configurada. Payload:", payload);
-    showToast("\u00e2\u009a\u00a0 API no configurada", "error");
+    showToast("\u26a0 API no configurada", "error");
     return false;
   }
   try {
@@ -1308,8 +1377,7 @@ async function sendPayloadJson(payload) {
   if (!CONFIG.API_URL || CONFIG.API_URL.startsWith("PEGA_")) return null;
   try {
     const res = await fetch(CONFIG.API_URL, {
-      method: "POST",
-      mode: "cors",
+      method: "POST", mode: "cors",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(payload)
     });
@@ -1321,7 +1389,7 @@ async function sendPayloadJson(payload) {
   }
 }
 
-/* ===== PANTALLA REVISI\u00d3N ===== */
+/* ===== PANTALLA REVISION ===== */
 function renderRevisar() {
   document.getElementById("revisarVenueTag").textContent = pendingAlbaranOCR.venue;
   const img = document.getElementById("revPhotoImg");
@@ -1338,75 +1406,74 @@ function renderRevList() {
   const list = document.getElementById("revList");
   const items = pendingAlbaranOCR.items;
   if (!items || items.length === 0) {
-    list.innerHTML = '<div class="rev-empty">No se detectaron l\u00edneas. Pulsa + A\u00d1ADIR L\u00cdNEA para introducirlas a mano.</div>';
+    list.innerHTML = '<div class="rev-empty">No se detectaron lineas. Pulsa A\u00d1ADIR L\u00cdNEA para introducirlas a mano.</div>';
     return;
   }
-  list.innerHTML = items.map((it, i) => {
-    const opciones = ['<option value="">\u00e2\u0080\u0094 Sin asignar \u00e2\u0080\u0094</option>']
-      .concat(PRODUCTOS.map(p => {
-        const sel = (it.productoMaestro || '').toLowerCase() === p.nombre.toLowerCase() ? 'selected' : '';
-        return '<option value="' + p.nombre.replace(/"/g,'&quot;') + '" ' + sel + '>' + p.nombre + '</option>';
+  list.innerHTML = items.map(function(it, i) {
+    var opciones = ['<option value="">-- Sin asignar --</option>']
+      .concat(PRODUCTOS.map(function(p) {
+        var sel = (it.productoMaestro || '').toLowerCase() === p.nombre.toLowerCase() ? 'selected' : '';
+        return '<option value="' + p.nombre.replace(/"/g, '&quot;') + '" ' + sel + '>' + p.nombre + '</option>';
       })).join('');
-    const unmapped = !it.mapeado ? ' unmapped' : '';
+    var unmapped = !it.mapeado ? ' unmapped' : '';
     return '<div class="rev-item' + unmapped + '" data-idx="' + i + '">' +
       '<div class="rev-item-fields">' +
-        '<div class="rev-row"><label>C\u00f3digo</label><input class="rev-input" data-field="codigo" value="' + (it.codigo||'').replace(/"/g,'&quot;') + '" placeholder="ERE..."></div>' +
-        '<div class="rev-row"><label>Logirest</label><input class="rev-input" data-field="producto" value="' + (it.producto||'').replace(/"/g,'&quot;') + '" placeholder="Texto del albar\u00e1n"></div>' +
+        '<div class="rev-row"><label>Codigo</label><input class="rev-input" data-field="codigo" value="' + (it.codigo || '').replace(/"/g, '&quot;') + '" placeholder="ERE..."></div>' +
+        '<div class="rev-row"><label>Logirest</label><input class="rev-input" data-field="producto" value="' + (it.producto || '').replace(/"/g, '&quot;') + '" placeholder="Texto del albaran"></div>' +
         '<div class="rev-row"><label>Maestro</label><select class="rev-select" data-field="productoMaestro">' + opciones + '</select></div>' +
       '</div>' +
       '<div class="rev-actions">' +
-        '<input class="rev-qty" type="number" inputmode="decimal" step="0.01" min="0" data-field="cantidad" value="' + (it.cantidad!==undefined?it.cantidad:'') + '">' +
-        '<button class="rev-del" type="button">\u00d7</button>' +
+        '<input class="rev-qty" type="number" inputmode="decimal" step="0.01" min="0" data-field="cantidad" value="' + (it.cantidad !== undefined ? it.cantidad : '') + '">' +
+        '<button class="rev-del" type="button">x</button>' +
       '</div>' +
     '</div>';
   }).join('');
 
-  // Listeners
-  list.querySelectorAll('.rev-input, .rev-select, .rev-qty').forEach(inp => {
-    inp.addEventListener('input', e => {
-      const idx = parseInt(e.target.closest('.rev-item').dataset.idx, 10);
-      const field = e.target.dataset.field;
+  list.querySelectorAll('.rev-input, .rev-select, .rev-qty').forEach(function(inp) {
+    inp.addEventListener('input', function(e) {
+      var idx = parseInt(e.target.closest('.rev-item').dataset.idx, 10);
+      var field = e.target.dataset.field;
       pendingAlbaranOCR.items[idx][field] = field === 'cantidad' ? Number(e.target.value) || 0 : e.target.value;
     });
   });
-  list.querySelectorAll('.rev-del').forEach(btn => {
-    btn.addEventListener('click', e => {
-      const idx = parseInt(e.target.closest('.rev-item').dataset.idx, 10);
+  list.querySelectorAll('.rev-del').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      var idx = parseInt(e.target.closest('.rev-item').dataset.idx, 10);
       pendingAlbaranOCR.items.splice(idx, 1);
       renderRevList();
     });
   });
 }
 
-document.getElementById("btnRevAdd").addEventListener("click", () => {
+document.getElementById("btnRevAdd").addEventListener("click", function() {
   pendingAlbaranOCR.items.push({codigo:"", producto:"", productoMaestro:"", cantidad:0, mapeado:false});
   renderRevList();
 });
 
-document.getElementById("backFromRevisar").addEventListener("click", () => {
-  confirmAction("\u00bfVolver atr\u00e1s?", "Perder\u00e1s las l\u00edneas revisadas. La foto seguir\u00e1 guardada en el sistema.", () => {
+document.getElementById("backFromRevisar").addEventListener("click", function() {
+  confirmAction("\u00bfVolver atr\u00e1s?", "Perder\u00e1s las l\u00edneas revisadas. La foto seguir\u00e1 guardada en el sistema.", function() {
     pendingAlbaranOCR = null;
     renderHome();
     showScreen("screenHome");
   });
 });
 
-document.getElementById("btnRevCancel").addEventListener("click", () => {
+document.getElementById("btnRevCancel").addEventListener("click", function() {
   document.getElementById("backFromRevisar").click();
 });
 
-document.getElementById("btnRevConfirm").addEventListener("click", () => {
-  const items = pendingAlbaranOCR.items.filter(it => (it.codigo || it.producto || it.productoMaestro) && Number(it.cantidad) > 0);
-  if (items.length === 0) { showToast("No hay l\u00edneas v\u00e1lidas", "error"); return; }
+document.getElementById("btnRevConfirm").addEventListener("click", function() {
+  var items = pendingAlbaranOCR.items.filter(function(it) { return (it.codigo || it.producto || it.productoMaestro) && Number(it.cantidad) > 0; });
+  if (items.length === 0) { showToast("No hay lineas validas", "error"); return; }
   confirmAction(
-    '\u00bfConfirmar <span class="lime">' + items.length + ' l\u00edneas</span>?',
-    'Se enviar\u00e1n al Excel como entrada de stock para ' + pendingAlbaranOCR.venue + '. No se podr\u00e1n modificar despu\u00e9s.',
+    'Confirmar <span class="lime">' + items.length + ' lineas</span>?',
+    'Se enviaran al Excel como entrada de stock para ' + pendingAlbaranOCR.venue + '. No se podran modificar despues.',
     confirmarAlbaran
   );
 });
 
 async function confirmarAlbaran() {
-  const items = pendingAlbaranOCR.items.filter(it => (it.codigo || it.producto || it.productoMaestro) && Number(it.cantidad) > 0);
+  const items = pendingAlbaranOCR.items.filter(function(it) { return (it.codigo || it.producto || it.productoMaestro) && Number(it.cantidad) > 0; });
   const payload = {
     type: "albaran_confirmar",
     venue: pendingAlbaranOCR.venue,
@@ -1416,7 +1483,7 @@ async function confirmarAlbaran() {
     items: items,
     appVersion: CONFIG.APP_VERSION
   };
-  showLoading("Enviando l\u00edneas\u00e2\u0080\u00a6");
+  showLoading("Enviando lineas...");
   const ok = await sendPayload(payload);
   hideLoading();
   if (ok) {
@@ -1424,12 +1491,12 @@ async function confirmarAlbaran() {
     pendingPhoto = null;
     state.lastSync = new Date().toISOString();
     saveState();
-    showToast("\u00e2\u009c\u0093 Albar\u00e1n confirmado", "success");
-    setTimeout(() => { renderHome(); showScreen("screenHome"); }, 1200);
+    showToast("Albaran confirmado", "success");
+    setTimeout(function() { renderHome(); showScreen("screenHome"); }, 1200);
   } else {
     enqueuePayload(payload);
-    showToast("Sin red. Guardado para reenv\u00edo", "error");
-    setTimeout(() => { renderHome(); showScreen("screenHome"); }, 1500);
+    showToast("Sin red. Guardado para reenvio", "error");
+    setTimeout(function() { renderHome(); showScreen("screenHome"); }, 1500);
   }
 }
 
@@ -1466,7 +1533,7 @@ function getWeekLabel() {
     const [y, m, d] = s.split("-");
     return `${d}/${m}`;
   };
-  return `SEM ${fmt(r.start)} \u00e2\u0080\u0093 ${fmt(r.end)}`;
+  return `SEM ${fmt(r.start)} \u2013 ${fmt(r.end)}`;
 }
 function getWeekRange() {
   const today = new Date();
