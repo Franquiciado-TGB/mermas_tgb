@@ -7,14 +7,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="TGB Inventario">
-<title>TGB Inventario · Conteo</title>
+<title>TGB Inventario Â· Conteo</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230A0A0A'/%3E%3Ctext x='50' y='62' font-family='monospace' font-size='42' font-weight='900' text-anchor='middle' fill='%23B8D43A'%3ETGB%3C/text%3E%3C/svg%3E">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { height: 100%; overscroll-behavior: none; }
 
   :root {
-    /* === PALETA OFICIAL TGB (extraída de The Good Club) === */
+    /* === PALETA OFICIAL TGB (extraÃ­da de The Good Club) === */
     --bg: #0A0A0A;
     --bg-2: #13110D;
     --bg-3: #1A1A14;
@@ -49,7 +49,7 @@
   .screen.active { display: block; }
 
   /* ============================================================
-     PANTALLA 1: SELECCIÓN DE LOCAL
+     PANTALLA 1: SELECCIÃN DE LOCAL
      ============================================================ */
   #screenSelect {
     display: none;
@@ -139,7 +139,7 @@
   }
 
   /* ============================================================
-     PANTALLA 2: MENÚ PRINCIPAL DEL LOCAL
+     PANTALLA 2: MENÃ PRINCIPAL DEL LOCAL
      ============================================================ */
   #screenHome {
     display: none;
@@ -397,7 +397,7 @@
   }
 
   /* ============================================================
-     PANTALLA 4: ALBARÁN (FOTO)
+     PANTALLA 4: ALBARÃN (FOTO)
      ============================================================ */
   #screenAlbaran { display: none; }
   #screenAlbaran.active { display: block; }
@@ -482,7 +482,7 @@
   .photo-status.error { color: var(--err); border: 1px solid var(--err); }
 
   /* ============================================================
-     FOOTER FIJO (botón enviar)
+     FOOTER FIJO (botÃ³n enviar)
      ============================================================ */
   .footer {
     position: fixed; bottom: 0; left: 0; right: 0;
@@ -620,65 +620,65 @@
 <body>
 
 <!-- ================================================================
-     PANTALLA 1: SELECCIÓN DE LOCAL
+     PANTALLA 1: SELECCIÃN DE LOCAL
      ================================================================ -->
 <section id="screenSelect" class="screen">
   <div class="select-header">
     <div class="select-logo">TGB</div>
     <div class="select-tagline">CONTROL INVENTARIO</div>
   </div>
-  <h1 class="select-title">¿Cuál es tu local?</h1>
-  <p class="select-subtitle">Selecciónalo solo la primera vez</p>
+  <h1 class="select-title">Â¿CuÃ¡l es tu local?</h1>
+  <p class="select-subtitle">SelecciÃ³nalo solo la primera vez</p>
   <div class="venue-cards">
     <button class="venue-card" data-venue="TOLOSA">
       <span class="venue-card-name">TOLOSA</span>
-      <span class="venue-card-arrow">→</span>
+      <span class="venue-card-arrow">â</span>
     </button>
     <button class="venue-card" data-venue="ZURRIOLA">
       <span class="venue-card-name">ZURRIOLA</span>
-      <span class="venue-card-arrow">→</span>
+      <span class="venue-card-arrow">â</span>
     </button>
     <button class="venue-card" data-venue="BALLONTI">
       <span class="venue-card-name">BALLONTI</span>
-      <span class="venue-card-arrow">→</span>
+      <span class="venue-card-arrow">â</span>
     </button>
   </div>
-  <div class="select-footer">GRUPO RECOBE · v2.0</div>
+  <div class="select-footer">GRUPO RECOBE Â· v2.0</div>
 </section>
 
 <!-- ================================================================
-     PANTALLA 2: MENÚ PRINCIPAL DEL LOCAL
+     PANTALLA 2: MENÃ PRINCIPAL DEL LOCAL
      ================================================================ -->
 <section id="screenHome" class="screen">
   <div class="home-banner">
-    Estás en <span class="venue-name" id="homeVenueName">—</span>
+    EstÃ¡s en <span class="venue-name" id="homeVenueName">â</span>
   </div>
   <div class="pending-banner" id="pendingBanner">
-    ⏱ Hay datos pendientes de enviar
+    â± Hay datos pendientes de enviar
   </div>
   <div class="home-content">
-    <div class="home-week" id="homeWeekLabel">SEMANA —</div>
+    <div class="home-week" id="homeWeekLabel">SEMANA â</div>
 
     <button class="action-btn primary" id="goCount">
-      <div class="action-icon">📋</div>
+      <div class="action-icon">ð</div>
       <div class="action-text">
         <div class="action-title">CONTEO LUNES</div>
-        <div class="action-meta">Inventario semanal · 43 productos</div>
+        <div class="action-meta">Inventario semanal Â· 43 productos</div>
       </div>
     </button>
 
     <button class="action-btn" id="goAlbaran">
-      <div class="action-icon">📷</div>
+      <div class="action-icon">ð·</div>
       <div class="action-text">
-        <div class="action-title">ALBARÁN ENTRADA</div>
-        <div class="action-meta">Foto del albarán del camión</div>
+        <div class="action-title">ALBARÃN ENTRADA</div>
+        <div class="action-meta">Foto del albarÃ¡n del camiÃ³n</div>
       </div>
     </button>
 
-    <div class="last-sync" id="lastSync">Última sincronización: nunca</div>
+    <div class="last-sync" id="lastSync">Ãltima sincronizaciÃ³n: nunca</div>
   </div>
   <div class="home-footer">
-    <button class="link-btn" id="changeVenueBtn">⚙ Cambiar local</button>
+    <button class="link-btn" id="changeVenueBtn">â Cambiar local</button>
   </div>
 </section>
 
@@ -688,9 +688,9 @@
 <section id="screenCount" class="screen">
   <div class="count-header">
     <div class="count-bar">
-      <button class="back-btn" id="backFromCount">←</button>
+      <button class="back-btn" id="backFromCount">â</button>
       <div class="count-title">CONTEO INVENTARIO</div>
-      <div class="count-venue-tag" id="countVenueTag">—</div>
+      <div class="count-venue-tag" id="countVenueTag">â</div>
     </div>
     <div class="progress-bar-wrap">
       <span class="progress-text">PROGRESO</span>
@@ -713,40 +713,66 @@
 </section>
 
 <!-- ================================================================
-     PANTALLA 4: ALBARÁN
+     PANTALLA 4: ALBARÃN
      ================================================================ -->
 <section id="screenAlbaran" class="screen">
   <div class="count-header">
     <div class="count-bar">
-      <button class="back-btn" id="backFromAlbaran">←</button>
-      <div class="count-title">ALBARÁN ENTRADA</div>
-      <div class="count-venue-tag" id="albaranVenueTag">—</div>
+      <button class="back-btn" id="backFromAlbaran">â</button>
+      <div class="count-title">ALBARÃN ENTRADA</div>
+      <div class="count-venue-tag" id="albaranVenueTag">â</div>
     </div>
   </div>
 
   <div class="alb-content">
     <div class="alb-step">
-      <h3>1 · Hacer foto</h3>
-      <p>Apunta al albarán completo. Asegúrate de que se ve bien la lista de productos y cantidades. Si hay varias páginas, hazlas una a una.</p>
+      <h3>1 Â· Hacer foto</h3>
+      <p>Apunta al albarÃ¡n completo. AsegÃºrate de que se ve bien la lista de productos y cantidades. Si hay varias pÃ¡ginas, hazlas una a una.</p>
       <div class="photo-input-wrap">
         <button class="photo-trigger">
-          <span class="photo-icon">📷</span>
+          <span class="photo-icon">ð·</span>
           <span>HACER FOTO</span>
         </button>
         <input type="file" class="photo-input" id="photoInput" accept="image/*" capture="environment">
       </div>
       <div class="photo-preview" id="photoPreview">
-        <img id="photoImg" alt="Albarán">
+        <img id="photoImg" alt="AlbarÃ¡n">
       </div>
       <div class="photo-status" id="photoStatus"></div>
     </div>
 
     <div class="alb-step" id="albaranMeta" style="display:none;">
-      <h3>2 · Confirmar envío</h3>
+      <h3>2 Â· Confirmar envÃ­o</h3>
       <p id="albaranSummary">Foto lista para enviar.</p>
-      <button class="btn btn-primary" style="width:100%;padding:18px;" id="btnSendAlbaran">ENVIAR Y REVISAR LÍNEAS</button>
+      <button class="btn btn-primary" style="width:100%;padding:18px;" id="btnSendAlbaran">ENVIAR Y REVISAR LÃNEAS</button>
     </div>
   </div>
+</section>
+
+
+
+<!-- ================================================================
+     PANTALLA 5: REVISIÓN ALBARÁN (post-OCR, antes de confirmar)
+================================================================ -->
+<section id="screenRevisar" class="screen">
+  <div class="count-header">
+    <div class="count-bar">
+      <button class="back-btn" id="backFromRevisar">←</button>
+      <div class="count-title">REVISAR ALBARÁN</div>
+      <div class="count-venue-tag" id="revisarVenueTag">—</div>
+    </div>
+  </div>
+  <div class="rev-info">
+    Revisa las líneas detectadas. Edita lo que sea incorrecto y elimina las que no quieras enviar.
+  </div>
+  <div class="rev-photo-thumb" id="revPhotoThumb"><img id="revPhotoImg" alt=""></div>
+  <div class="rev-list" id="revList"></div>
+  <button class="rev-add" id="btnRevAdd">+ AÑADIR LÍNEA</button>
+
+  <footer class="footer">
+    <button class="btn btn-ghost" id="btnRevCancel">Cancelar</button>
+    <button class="btn btn-primary" id="btnRevConfirm">Confirmar y enviar</button>
+  </footer>
 </section>
 
 <!-- ================================================================
@@ -757,7 +783,7 @@
 <div class="modal-backdrop" id="confirmModal">
   <div class="modal">
     <h3 id="modalTitle">Confirmar</h3>
-    <p id="modalText">—</p>
+    <p id="modalText">â</p>
     <div class="modal-actions">
       <button class="btn" id="modalCancel">Cancelar</button>
       <button class="btn btn-primary" id="modalConfirm">Confirmar</button>
@@ -772,36 +798,36 @@
 
 <script>
 /* =====================================================================
-   ⚙️ CONFIGURACIÓN — EDITAR ESTAS LÍNEAS DESPUÉS DE PUBLICAR APPS SCRIPT
+   âï¸ CONFIGURACIÃN â EDITAR ESTAS LÃNEAS DESPUÃS DE PUBLICAR APPS SCRIPT
    ===================================================================== */
 const CONFIG = {
-  // Pega aquí la URL del Apps Script publicado como Web App.
-  // La obtendrás siguiendo la guía de instalación.
+  // Pega aquÃ­ la URL del Apps Script publicado como Web App.
+  // La obtendrÃ¡s siguiendo la guÃ­a de instalaciÃ³n.
   // Ejemplo: "https://script.google.com/macros/s/AKfycbx.../exec"
   API_URL: "https://script.google.com/macros/s/AKfycbz3F2G0PVAH2-6FXxwpfpOyr1Pvfw2cilycOQmyHLcXPxzXfwPCqVkLHMpXbVVP8YN8/exec",
   APP_VERSION: "2.2"
 };
 
 /* =====================================================================
-   MAESTRO DE PRODUCTOS — idéntico al Excel maestro
+   MAESTRO DE PRODUCTOS â idÃ©ntico al Excel maestro
    ===================================================================== */
 const PRODUCTOS = [
-  { cat: "Proteína",  nombre: "Hamburguesa Vacuno 100g",   und: "uds" },
-  { cat: "Proteína",  nombre: "Lagrimas de Pollo",         und: "kg"  },
-  { cat: "Proteína",  nombre: "Crispy Chicken",            und: "uds" },
-  { cat: "Proteína",  nombre: "Alitas Barbacoa 2kg",       und: "kg"  },
-  { cat: "Proteína",  nombre: "Pulled Pork TGB",           und: "kg"  },
-  { cat: "Proteína",  nombre: "Bacon Loncheado",           und: "kg"  },
-  { cat: "Proteína",  nombre: "Bacon Sello",               und: "kg"  },
-  { cat: "Proteína",  nombre: "Salchicha Vacuno",          und: "uds" },
-  { cat: "Proteína",  nombre: "Burger Vegana Pollo",       und: "uds" },
-  { cat: "Panadería", nombre: "Pan Burger XL 64g",         und: "uds" },
-  { cat: "Panadería", nombre: "Pan Burger Doble Disco",    und: "uds" },
-  { cat: "Panadería", nombre: "Pan Lobster 75g",           und: "uds" },
-  { cat: "Lácteos",   nombre: "Lonchas Hochland",          und: "kg"  },
-  { cat: "Lácteos",   nombre: "Queso Cabra Empanado",      und: "uds" },
-  { cat: "Lácteos",   nombre: "Bites Cheddar Jalapeño",    und: "kg"  },
-  { cat: "Lácteos",   nombre: "Camembert Empanado",        und: "kg"  },
+  { cat: "ProteÃ­na",  nombre: "Hamburguesa Vacuno 100g",   und: "uds" },
+  { cat: "ProteÃ­na",  nombre: "Lagrimas de Pollo",         und: "kg"  },
+  { cat: "ProteÃ­na",  nombre: "Crispy Chicken",            und: "uds" },
+  { cat: "ProteÃ­na",  nombre: "Alitas Barbacoa 2kg",       und: "kg"  },
+  { cat: "ProteÃ­na",  nombre: "Pulled Pork TGB",           und: "kg"  },
+  { cat: "ProteÃ­na",  nombre: "Bacon Loncheado",           und: "kg"  },
+  { cat: "ProteÃ­na",  nombre: "Bacon Sello",               und: "kg"  },
+  { cat: "ProteÃ­na",  nombre: "Salchicha Vacuno",          und: "uds" },
+  { cat: "ProteÃ­na",  nombre: "Burger Vegana Pollo",       und: "uds" },
+  { cat: "PanaderÃ­a", nombre: "Pan Burger XL 64g",         und: "uds" },
+  { cat: "PanaderÃ­a", nombre: "Pan Burger Doble Disco",    und: "uds" },
+  { cat: "PanaderÃ­a", nombre: "Pan Lobster 75g",           und: "uds" },
+  { cat: "LÃ¡cteos",   nombre: "Lonchas Hochland",          und: "kg"  },
+  { cat: "LÃ¡cteos",   nombre: "Queso Cabra Empanado",      und: "uds" },
+  { cat: "LÃ¡cteos",   nombre: "Bites Cheddar JalapeÃ±o",    und: "kg"  },
+  { cat: "LÃ¡cteos",   nombre: "Camembert Empanado",        und: "kg"  },
   { cat: "Fritos",    nombre: "Patata Really Crunchy",     und: "kg"  },
   { cat: "Fritos",    nombre: "Sweet Potato Fries",        und: "kg"  },
   { cat: "Fritos",    nombre: "Aceite Fritura 5L",         und: "lt"  },
@@ -820,14 +846,14 @@ const PRODUCTOS = [
   { cat: "Refrescos", nombre: "Coca-Cola BIB 10L",         und: "lt"  },
   { cat: "Refrescos", nombre: "Coca-Cola Zero BIB 10L",    und: "lt"  },
   { cat: "Refrescos", nombre: "Fanta Naranja BIB 10L",     und: "lt"  },
-  { cat: "Refrescos", nombre: "Fanta Limón Zero BIB 5L",   und: "lt"  },
+  { cat: "Refrescos", nombre: "Fanta LimÃ³n Zero BIB 5L",   und: "lt"  },
   { cat: "Refrescos", nombre: "Sprite BIB 5L",             und: "lt"  },
   { cat: "Refrescos", nombre: "Aquarius Zero BIB 5L",      und: "lt"  },
-  { cat: "Refrescos", nombre: "Fuze Tea Limón BIB 5L",     und: "lt"  },
+  { cat: "Refrescos", nombre: "Fuze Tea LimÃ³n BIB 5L",     und: "lt"  },
   { cat: "Cervezas",  nombre: "Heineken Barril",           und: "lt"  },
-  { cat: "Cervezas",  nombre: "Águila Dorada Barril",      und: "lt"  },
-  { cat: "Cervezas",  nombre: "Águila Sin Filtrar Barril", und: "lt"  },
-  { cat: "Cervezas",  nombre: "Radler Limón Barril",       und: "lt"  },
+  { cat: "Cervezas",  nombre: "Ãguila Dorada Barril",      und: "lt"  },
+  { cat: "Cervezas",  nombre: "Ãguila Sin Filtrar Barril", und: "lt"  },
+  { cat: "Cervezas",  nombre: "Radler LimÃ³n Barril",       und: "lt"  },
   { cat: "Cervezas",  nombre: "Paulaner Barril",           und: "lt"  }
 ];
 PRODUCTOS.forEach((p, i) => { p.id = "p" + i; });
@@ -888,7 +914,7 @@ function bootstrap() {
   } else {
     renderHome();
     showScreen("screenHome");
-    // Reintentar enviar lo que esté pendiente
+    // Reintentar enviar lo que estÃ© pendiente
     if (state.pendingQueue.length > 0) {
       processPendingQueue();
     }
@@ -896,14 +922,14 @@ function bootstrap() {
 }
 
 /* =====================================================================
-   PANTALLA 1: SELECCIÓN DE LOCAL
+   PANTALLA 1: SELECCIÃN DE LOCAL
    ===================================================================== */
 document.querySelectorAll(".venue-card").forEach(btn => {
   btn.addEventListener("click", () => {
     const venue = btn.dataset.venue;
     confirmAction(
-      `¿Tu local es <span class="lime">${venue}</span>?`,
-      "Esta selección se guardará en tu móvil. Solo cámbiala si te has equivocado o trabajas en otro local.",
+      `Â¿Tu local es <span class="lime">${venue}</span>?`,
+      "Esta selecciÃ³n se guardarÃ¡ en tu mÃ³vil. Solo cÃ¡mbiala si te has equivocado o trabajas en otro local.",
       () => {
         state.venue = venue;
         saveState();
@@ -923,16 +949,16 @@ function renderHome() {
   const sync = document.getElementById("lastSync");
   if (state.lastSync) {
     const d = new Date(state.lastSync);
-    sync.textContent = `Última sincronización: ${d.toLocaleString("es-ES", {dateStyle:"short", timeStyle:"short"})}`;
+    sync.textContent = `Ãltima sincronizaciÃ³n: ${d.toLocaleString("es-ES", {dateStyle:"short", timeStyle:"short"})}`;
     sync.classList.remove("error");
   } else {
-    sync.textContent = "Última sincronización: nunca";
+    sync.textContent = "Ãltima sincronizaciÃ³n: nunca";
   }
   // Banner pendiente
   const pending = document.getElementById("pendingBanner");
   if (state.pendingQueue.length > 0) {
     pending.classList.add("show");
-    pending.textContent = `⏱ ${state.pendingQueue.length} envío(s) pendiente(s) — reintentando...`;
+    pending.textContent = `â± ${state.pendingQueue.length} envÃ­o(s) pendiente(s) â reintentando...`;
   } else {
     pending.classList.remove("show");
   }
@@ -957,8 +983,8 @@ document.getElementById("goAlbaran").addEventListener("click", () => {
 
 document.getElementById("changeVenueBtn").addEventListener("click", () => {
   confirmAction(
-    "¿Cambiar de local?",
-    "Vas a poder elegir otro local. Los datos no enviados se mantendrán en cola.",
+    "Â¿Cambiar de local?",
+    "Vas a poder elegir otro local. Los datos no enviados se mantendrÃ¡n en cola.",
     () => {
       state.venue = null;
       saveState();
@@ -1000,7 +1026,7 @@ function renderCategories() {
     return `
       <section class="category ${isCollapsed ? "collapsed" : ""}" data-cat="${g.cat}">
         <div class="category-header">
-          <span class="category-name">▸ ${g.cat}</span>
+          <span class="category-name">â¸ ${g.cat}</span>
           <div class="category-meta">
             <span data-cat-progress="${g.cat}">${counted}/${g.items.length}</span>
             <div class="chevron"></div>
@@ -1016,7 +1042,7 @@ function renderCategories() {
                   <div class="product-name">${it.nombre}</div>
                   <div class="product-unit">${it.und}</div>
                 </div>
-                <input class="product-input" type="number" inputmode="decimal" step="0.01" min="0" placeholder="—" value="${has ? v : ""}" data-pid="${it.id}">
+                <input class="product-input" type="number" inputmode="decimal" step="0.01" min="0" placeholder="â" value="${has ? v : ""}" data-pid="${it.id}">
               </div>`;
           }).join("")}
         </div>
@@ -1066,8 +1092,8 @@ function updateProgress() {
 
 document.getElementById("btnReset").addEventListener("click", () => {
   confirmAction(
-    "¿Limpiar conteo?",
-    `Se borrarán los valores del conteo actual de ${state.venue}. Esta acción no se puede deshacer.`,
+    "Â¿Limpiar conteo?",
+    `Se borrarÃ¡n los valores del conteo actual de ${state.venue}. Esta acciÃ³n no se puede deshacer.`,
     () => {
       state.counts = {};
       saveState();
@@ -1089,7 +1115,7 @@ document.getElementById("btnSend").addEventListener("click", () => {
   }
 
   const incomplete = counted < PRODUCTOS.length;
-  const title = `¿Enviar conteo de <span class="lime">${state.venue}</span>?`;
+  const title = `Â¿Enviar conteo de <span class="lime">${state.venue}</span>?`;
   const text = incomplete
     ? `Faltan ${PRODUCTOS.length - counted} productos por contar. Una vez enviado, no se puede modificar.`
     : `Conteo completo (${PRODUCTOS.length} productos). Una vez enviado, no se puede modificar.`;
@@ -1126,7 +1152,7 @@ async function sendCount() {
     state.counts = {};  // limpiar para la siguiente semana
     state.lastSync = new Date().toISOString();
     saveState();
-    showToast("✓ Conteo enviado correctamente", "success");
+    showToast("â Conteo enviado correctamente", "success");
     setTimeout(() => {
       renderHome();
       showScreen("screenHome");
@@ -1134,13 +1160,13 @@ async function sendCount() {
   } else {
     // Encolar para reintento
     enqueuePayload(payload);
-    showToast("Sin red. Guardado para reenvío automático", "error");
+    showToast("Sin red. Guardado para reenvÃ­o automÃ¡tico", "error");
     setTimeout(() => { renderHome(); showScreen("screenHome"); }, 1500);
   }
 }
 
 /* =====================================================================
-   PANTALLA 4: ALBARÁN
+   PANTALLA 4: ALBARÃN
    ===================================================================== */
 document.getElementById("backFromAlbaran").addEventListener("click", () => {
   renderHome();
@@ -1164,12 +1190,12 @@ document.getElementById("photoInput").addEventListener("change", async e => {
     img.src = dataUrl;
     preview.classList.add("show");
     pendingPhoto = { dataUrl, fileName: file.name, sizeKB };
-    status.textContent = `✓ Imagen lista (${sizeKB} KB)`;
+    status.textContent = `â Imagen lista (${sizeKB} KB)`;
     status.classList.add("success");
 
     document.getElementById("albaranMeta").style.display = "block";
     document.getElementById("albaranSummary").textContent =
-      `La foto se enviará a ${state.venue}. Tras enviarla, el sistema leerá los productos y los añadirá como entrada de stock.`;
+      `La foto se enviarÃ¡ a ${state.venue}. Tras enviarla, el sistema leerÃ¡ los productos y los aÃ±adirÃ¡ como entrada de stock.`;
   } catch (err) {
     status.textContent = "Error al procesar la foto: " + err.message;
     status.classList.add("error");
@@ -1179,8 +1205,8 @@ document.getElementById("photoInput").addEventListener("change", async e => {
 document.getElementById("btnSendAlbaran").addEventListener("click", () => {
   if (!pendingPhoto) return;
   confirmAction(
-    `¿Enviar albarán de <span class="lime">${state.venue}</span>?`,
-    `Se enviará la foto al sistema. Una vez procesado el albarán, las cantidades entrarán como compras de la semana.`,
+    `Â¿Enviar albarÃ¡n de <span class="lime">${state.venue}</span>?`,
+    `Se enviarÃ¡ la foto al sistema. Una vez procesado el albarÃ¡n, las cantidades entrarÃ¡n como compras de la semana.`,
     sendAlbaran
   );
 });
@@ -1199,12 +1225,12 @@ async function sendAlbaran() {
     appVersion: CONFIG.APP_VERSION
   };
 
-  showLoading("Subiendo y leyendo albaran…");
+  showLoading("Subiendo y leyendo albaranâ¦");
   const resp = await sendPayloadJson(payload);
   hideLoading();
 
   if (resp && resp.ok && resp.result) {
-    // Ir a pantalla revisión con los items detectados
+    // Ir a pantalla revisiÃ³n con los items detectados
     pendingAlbaranOCR = {
       fileName: resp.result.fileName,
       venue: resp.result.venue,
@@ -1241,7 +1267,7 @@ function compressImage(file, maxDim, quality) {
         ctx.drawImage(img, 0, 0, width, height);
         resolve(canvas.toDataURL("image/jpeg", quality));
       };
-      img.onerror = () => reject(new Error("imagen inválida"));
+      img.onerror = () => reject(new Error("imagen invÃ¡lida"));
       img.src = reader.result;
     };
     reader.onerror = () => reject(new Error("lectura"));
@@ -1250,12 +1276,12 @@ function compressImage(file, maxDim, quality) {
 }
 
 /* =====================================================================
-   ENVÍO + COLA OFFLINE
+   ENVÃO + COLA OFFLINE
    ===================================================================== */
 async function sendPayload(payload) {
   if (!CONFIG.API_URL || CONFIG.API_URL.startsWith("PEGA_")) {
     console.warn("API_URL no configurada. Payload:", payload);
-    showToast("⚠ API no configurada", "error");
+    showToast("â  API no configurada", "error");
     return false;
   }
   try {
@@ -1271,7 +1297,7 @@ async function sendPayload(payload) {
     if (data.ok === false) throw new Error(data.error || "respuesta no OK");
     return true;
   } catch (e) {
-    console.error("Error envío:", e);
+    console.error("Error envÃ­o:", e);
     return false;
   }
 }
@@ -1295,7 +1321,7 @@ async function sendPayloadJson(payload) {
   }
 }
 
-/* ===== PANTALLA REVISIÓN ===== */
+/* ===== PANTALLA REVISIÃN ===== */
 function renderRevisar() {
   document.getElementById("revisarVenueTag").textContent = pendingAlbaranOCR.venue;
   const img = document.getElementById("revPhotoImg");
@@ -1312,11 +1338,11 @@ function renderRevList() {
   const list = document.getElementById("revList");
   const items = pendingAlbaranOCR.items;
   if (!items || items.length === 0) {
-    list.innerHTML = '<div class="rev-empty">No se detectaron líneas. Pulsa + AÑADIR LÍNEA para introducirlas a mano.</div>';
+    list.innerHTML = '<div class="rev-empty">No se detectaron lÃ­neas. Pulsa + AÃADIR LÃNEA para introducirlas a mano.</div>';
     return;
   }
   list.innerHTML = items.map((it, i) => {
-    const opciones = ['<option value="">— Sin asignar —</option>']
+    const opciones = ['<option value="">â Sin asignar â</option>']
       .concat(PRODUCTOS.map(p => {
         const sel = (it.productoMaestro || '').toLowerCase() === p.nombre.toLowerCase() ? 'selected' : '';
         return '<option value="' + p.nombre.replace(/"/g,'&quot;') + '" ' + sel + '>' + p.nombre + '</option>';
@@ -1324,13 +1350,13 @@ function renderRevList() {
     const unmapped = !it.mapeado ? ' unmapped' : '';
     return '<div class="rev-item' + unmapped + '" data-idx="' + i + '">' +
       '<div class="rev-item-fields">' +
-        '<div class="rev-row"><label>Código</label><input class="rev-input" data-field="codigo" value="' + (it.codigo||'').replace(/"/g,'&quot;') + '" placeholder="ERE..."></div>' +
-        '<div class="rev-row"><label>Logirest</label><input class="rev-input" data-field="producto" value="' + (it.producto||'').replace(/"/g,'&quot;') + '" placeholder="Texto del albarán"></div>' +
+        '<div class="rev-row"><label>CÃ³digo</label><input class="rev-input" data-field="codigo" value="' + (it.codigo||'').replace(/"/g,'&quot;') + '" placeholder="ERE..."></div>' +
+        '<div class="rev-row"><label>Logirest</label><input class="rev-input" data-field="producto" value="' + (it.producto||'').replace(/"/g,'&quot;') + '" placeholder="Texto del albarÃ¡n"></div>' +
         '<div class="rev-row"><label>Maestro</label><select class="rev-select" data-field="productoMaestro">' + opciones + '</select></div>' +
       '</div>' +
       '<div class="rev-actions">' +
         '<input class="rev-qty" type="number" inputmode="decimal" step="0.01" min="0" data-field="cantidad" value="' + (it.cantidad!==undefined?it.cantidad:'') + '">' +
-        '<button class="rev-del" type="button">×</button>' +
+        '<button class="rev-del" type="button">Ã</button>' +
       '</div>' +
     '</div>';
   }).join('');
@@ -1358,7 +1384,7 @@ document.getElementById("btnRevAdd").addEventListener("click", () => {
 });
 
 document.getElementById("backFromRevisar").addEventListener("click", () => {
-  confirmAction("¿Volver atrás?", "Perderás las líneas revisadas. La foto seguirá guardada en el sistema.", () => {
+  confirmAction("Â¿Volver atrÃ¡s?", "PerderÃ¡s las lÃ­neas revisadas. La foto seguirÃ¡ guardada en el sistema.", () => {
     pendingAlbaranOCR = null;
     renderHome();
     showScreen("screenHome");
@@ -1371,10 +1397,10 @@ document.getElementById("btnRevCancel").addEventListener("click", () => {
 
 document.getElementById("btnRevConfirm").addEventListener("click", () => {
   const items = pendingAlbaranOCR.items.filter(it => (it.codigo || it.producto || it.productoMaestro) && Number(it.cantidad) > 0);
-  if (items.length === 0) { showToast("No hay líneas válidas", "error"); return; }
+  if (items.length === 0) { showToast("No hay lÃ­neas vÃ¡lidas", "error"); return; }
   confirmAction(
-    '¿Confirmar <span class="lime">' + items.length + ' líneas</span>?',
-    'Se enviarán al Excel como entrada de stock para ' + pendingAlbaranOCR.venue + '. No se podrán modificar después.',
+    'Â¿Confirmar <span class="lime">' + items.length + ' lÃ­neas</span>?',
+    'Se enviarÃ¡n al Excel como entrada de stock para ' + pendingAlbaranOCR.venue + '. No se podrÃ¡n modificar despuÃ©s.',
     confirmarAlbaran
   );
 });
@@ -1390,7 +1416,7 @@ async function confirmarAlbaran() {
     items: items,
     appVersion: CONFIG.APP_VERSION
   };
-  showLoading("Enviando líneas…");
+  showLoading("Enviando lÃ­neasâ¦");
   const ok = await sendPayload(payload);
   hideLoading();
   if (ok) {
@@ -1398,11 +1424,11 @@ async function confirmarAlbaran() {
     pendingPhoto = null;
     state.lastSync = new Date().toISOString();
     saveState();
-    showToast("✓ Albarán confirmado", "success");
+    showToast("â AlbarÃ¡n confirmado", "success");
     setTimeout(() => { renderHome(); showScreen("screenHome"); }, 1200);
   } else {
     enqueuePayload(payload);
-    showToast("Sin red. Guardado para reenvío", "error");
+    showToast("Sin red. Guardado para reenvÃ­o", "error");
     setTimeout(() => { renderHome(); showScreen("screenHome"); }, 1500);
   }
 }
@@ -1440,7 +1466,7 @@ function getWeekLabel() {
     const [y, m, d] = s.split("-");
     return `${d}/${m}`;
   };
-  return `SEM ${fmt(r.start)} – ${fmt(r.end)}`;
+  return `SEM ${fmt(r.start)} â ${fmt(r.end)}`;
 }
 function getWeekRange() {
   const today = new Date();
